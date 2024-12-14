@@ -1,6 +1,8 @@
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
@@ -80,6 +82,12 @@ public class GuiWindow {
 
 
 
+        add_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                GuiAddFlashcard guiAddFlashcard = new GuiAddFlashcard("Add flash card", 600, 400);
+            }
+        });
     }
 
     /**
