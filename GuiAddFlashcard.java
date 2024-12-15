@@ -25,7 +25,7 @@ public class GuiAddFlashcard
 
 
 
-    GuiAddFlashcard(String title, int width, int height, Vector<FlashcardText> text_ones)
+    GuiAddFlashcard(String title, int width, int height, Vector<Flashcard> text_ones)
     {
         // Init JFrame
         add_flashcard_window = new JFrame(title);
@@ -109,12 +109,12 @@ public class GuiAddFlashcard
         add_flashcard_window.setVisible(true);
     }
 
-    private void addButtonListeners(Vector<FlashcardText> text_ones)
+    private void addButtonListeners(Vector<Flashcard> text_ones)
     {
         add_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                text_ones.add(new FlashcardText(saved_question, saved_answer));
+                text_ones.add(new FlashcardText(saved_question, saved_answer)); //polymorphism!
                 JOptionPane.showMessageDialog(add_flashcard_window, "Flashcard added!");
                 add_flashcard_window.dispose(); // Close the window
             }

@@ -20,7 +20,7 @@ public class GuiWindow {
     /**It is the font sized used for normal text*/
     private int normal_font_size =30;
 
-    private Vector<FlashcardText> text_ones = new Vector<>(0);
+    private Vector<Flashcard> text_ones = new Vector<>(0); //polymorphism!
 
     public GuiWindow(){
 
@@ -100,7 +100,7 @@ public class GuiWindow {
                 JLabel Questions;
                 //hellish function to print questions in memory
                 for(int i =0; i< text_ones.size(); i++){
-                    System.out.println(text_ones.get(i).toString());
+                    System.out.println(text_ones.get(i).toString()); //Polymorphism!
                     Questions = new JLabel(text_ones.get(i).toString());
                     Questions.setAlignmentX(Component.CENTER_ALIGNMENT);
                     main_section.add(Questions);
