@@ -4,7 +4,7 @@ abstract class Flashcard {
 
     abstract void printOut(); //prints out the flashcard for usage
     abstract void printOutDebug(); //prints out the flashcard for debugging
-    abstract void checkAnswer(); //checks if answer is right
+    abstract public String toString();
 }
 
 class FlashcardText extends Flashcard {
@@ -28,8 +28,12 @@ private String answer; //answer to the question
     }
 
     @Override
-    void checkAnswer() {
-        if(question == answer){
+    public String toString(){
+        return "question: " + question + " answer: " + answer;
+    }
+
+    void checkAnswer(String input) {
+        if(input == answer){
             is_correct = true;
         }
         //no need to change to 0 it already is 0

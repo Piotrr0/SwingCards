@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Vector;
 
 /* Gui that pops up while add button is clicked */
 public class GuiAddFlashcard
@@ -24,7 +25,7 @@ public class GuiAddFlashcard
 
 
 
-    GuiAddFlashcard(String title, int width, int height)
+    GuiAddFlashcard(String title, int width, int height, Vector<FlashcardText> text_ones)
     {
         // Init JFrame
         add_flashcard_window = new JFrame(title);
@@ -103,16 +104,17 @@ public class GuiAddFlashcard
 
         add_flashcard_window.add(bottom_panel, BorderLayout.SOUTH); // Add to the bottom
 
-        addButtonListeners();
+        addButtonListeners(text_ones);
 
         add_flashcard_window.setVisible(true);
     }
 
-    private void addButtonListeners()
+    private void addButtonListeners(Vector<FlashcardText> text_ones)
     {
         add_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                text_ones.add(new FlashcardText(saved_question, saved_answer));
                 JOptionPane.showMessageDialog(add_flashcard_window, "Flashcard added!");
                 add_flashcard_window.dispose(); // Close the window
             }
@@ -131,7 +133,7 @@ public class GuiAddFlashcard
                 // Save question from text field
                 saved_question = text_question.getText();
 
-                // Display the saved text in the label
+                // Display the saved answer in the label
                 saved_question_label.setText("Saved Question: " + saved_question);
             }
 

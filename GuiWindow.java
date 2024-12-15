@@ -4,7 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-
+import java.util.Vector;
 /**
  * Class is responsible for creating  a window using java swing
  */
@@ -20,7 +20,7 @@ public class GuiWindow {
     /**It is the font sized used for normal text*/
     private int normal_font_size =30;
 
-
+    private Vector<FlashcardText> text_ones = new Vector<>(0);
 
     public GuiWindow(){
 
@@ -87,8 +87,28 @@ public class GuiWindow {
         add_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GuiAddFlashcard guiAddFlashcard = new GuiAddFlashcard("Add flash card", 800, 400);
+                GuiAddFlashcard guiAddFlashcard = new GuiAddFlashcard("Add flash card", 800, 400, text_ones);
             }
+        });
+
+        //for now inspect prints out flashcards in memory
+        inspect_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                main_section.removeAll();
+                main_section.setLayout(new BoxLayout(main_section, BoxLayout.Y_AXIS)); //vertical layout
+                JLabel Questions;
+                //hellish function to print questions in memory
+                for(int i =0; i< text_ones.size(); i++){
+                    System.out.println(text_ones.get(i).toString());
+                    Questions = new JLabel(text_ones.get(i).toString());
+                    Questions.setAlignmentX(Component.CENTER_ALIGNMENT);
+                    main_section.add(Questions);
+                }
+                main_section.repaint(); //crucial for the JPanel update to work
+                main_section.revalidate(); //also crucial for the JPanel
+            }
+
         });
     }
 
