@@ -1,28 +1,24 @@
 import javax.swing.*;
-import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 /* Gui that pops up while add button is clicked */
 public class GuiAddFlashcard
 {
     private final JButton add_button;
     private final JButton close_button;
-    private final JButton saveQuestionButton;
-    private final JButton saveAnswerButton;
+    private final JButton save_question_button;
+    private final JButton save_answer_button;
 
-    private final JTextField textAnswer;
-    private final JTextField textQuestion;
+    private final JTextField text_answer;
+    private final JTextField text_question;
 
-    private String savedQuestion;
-    private String savedAnswer;
+    private String saved_question;
+    private String saved_answer;
 
-
-
-    private final JLabel savedQuestionLabel;
-    private final JLabel savedAnswerLabel;
+    private final JLabel saved_question_label;
+    private final JLabel saved_answer_label;
 
     private final JFrame add_flashcard_window;
 
@@ -38,61 +34,61 @@ public class GuiAddFlashcard
 
 
         //JPanel for input section
-        JPanel inputPanel = new JPanel();
+        JPanel input_panel = new JPanel();
         //top to bottom component placement
-        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
+        input_panel.setLayout(new BoxLayout(input_panel, BoxLayout.Y_AXIS));
 
-        JLabel addQuestion = new JLabel("Enter Question:");
-        addQuestion.setAlignmentX(Component.CENTER_ALIGNMENT); //centers the field
+        JLabel add_question = new JLabel("Enter Question:");
+        add_question.setAlignmentX(Component.CENTER_ALIGNMENT); //centers the field
         //input for reading question from user
-        textQuestion = new JTextField();
-        textQuestion.setMaximumSize(new Dimension(300, textQuestion.getPreferredSize().height));
+        text_question = new JTextField();
+        text_question.setMaximumSize(new Dimension(300, text_question.getPreferredSize().height));
         //button for saving question
-        saveQuestionButton = new JButton("Save Question");
-        saveQuestionButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        save_question_button = new JButton("Save Question");
+        save_question_button.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         //same thing but for answer
-        JLabel addAnswer = new JLabel("Enter Answer:");
-        addAnswer.setAlignmentX(Component.CENTER_ALIGNMENT); //centers the field
+        JLabel add_answer = new JLabel("Enter Answer:");
+        add_answer.setAlignmentX(Component.CENTER_ALIGNMENT); //centers the field
         //input for reading answer from user
-        textAnswer = new JTextField();
-        textAnswer.setMaximumSize(new Dimension(300, textQuestion.getPreferredSize().height));
+        text_answer = new JTextField();
+        text_answer.setMaximumSize(new Dimension(300, text_question.getPreferredSize().height));
         //button for saving answer
-        saveAnswerButton = new JButton("Save Answer");
-        saveAnswerButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        save_answer_button = new JButton("Save Answer");
+        save_answer_button.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         //adding question
-        inputPanel.add(addQuestion);
-        inputPanel.add(Box.createVerticalStrut(10)); //vertical distance
-        inputPanel.add(textQuestion);
-        inputPanel.add(Box.createVerticalStrut(10)); //vertical distance
-        inputPanel.add(saveQuestionButton);
-        inputPanel.add(Box.createVerticalStrut(40)); //vertical distance
+        input_panel.add(add_question);
+        input_panel.add(Box.createVerticalStrut(10)); //vertical distance
+        input_panel.add(text_question);
+        input_panel.add(Box.createVerticalStrut(10)); //vertical distance
+        input_panel.add(save_question_button);
+        input_panel.add(Box.createVerticalStrut(40)); //vertical distance
 
         //adding answer
-        inputPanel.add(addAnswer);
-        inputPanel.add(Box.createVerticalStrut(10)); //vertical distance
-        inputPanel.add(textAnswer);
-        inputPanel.add(Box.createVerticalStrut(10)); //vertical distance
-        inputPanel.add(saveAnswerButton);
-        add_flashcard_window.add(inputPanel, BorderLayout.NORTH);
+        input_panel.add(add_answer);
+        input_panel.add(Box.createVerticalStrut(10)); //vertical distance
+        input_panel.add(text_answer);
+        input_panel.add(Box.createVerticalStrut(10)); //vertical distance
+        input_panel.add(save_answer_button);
+        add_flashcard_window.add(input_panel, BorderLayout.NORTH);
 
         //JPanel for showing current saved stuff
-        JPanel outputPanel = new JPanel();
+        JPanel output_panel = new JPanel();
         //top to bottom component placement
-        outputPanel.setLayout(new BoxLayout(outputPanel, BoxLayout.Y_AXIS));
+        output_panel.setLayout(new BoxLayout(output_panel, BoxLayout.Y_AXIS));
 
         //output labels
-        savedQuestionLabel= new JLabel("Saved Question: ");
-        savedQuestionLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-        savedAnswerLabel = new JLabel("Saved Answer: ");
-        savedAnswerLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        saved_question_label= new JLabel("Saved Question: ");
+        saved_question_label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        saved_answer_label = new JLabel("Saved Answer: ");
+        saved_answer_label.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-        inputPanel.add(Box.createVerticalStrut(40)); //vertical distance
-        outputPanel.add(savedQuestionLabel);
-        inputPanel.add(Box.createVerticalStrut(10)); //vertical distance
-        outputPanel.add(savedAnswerLabel);
-        add_flashcard_window.add(outputPanel, BorderLayout.CENTER);
+        input_panel.add(Box.createVerticalStrut(40)); //vertical distance
+        output_panel.add(saved_question_label);
+        input_panel.add(Box.createVerticalStrut(10)); //vertical distance
+        output_panel.add(saved_answer_label);
+        add_flashcard_window.add(output_panel, BorderLayout.CENTER);
 
 
 
@@ -129,26 +125,26 @@ public class GuiAddFlashcard
             }
         });
 
-        saveQuestionButton.addActionListener(new ActionListener() {
+        save_question_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Save question from text field
-                savedQuestion = textQuestion.getText();
+                saved_question = text_question.getText();
 
                 // Display the saved text in the label
-                savedQuestionLabel.setText("Saved Question: " + savedQuestion);
+                saved_question_label.setText("Saved Question: " + saved_question);
             }
 
         });
 
-        saveAnswerButton.addActionListener(new ActionListener() {
+        save_answer_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 // Save question from text field
-                savedAnswer = textAnswer.getText();
+                saved_answer = text_answer.getText();
 
                 // Display the saved text in the label
-                savedAnswerLabel.setText("Saved Answer: " + savedAnswer);
+                saved_answer_label.setText("Saved Answer: " + saved_answer);
             }
 
         });

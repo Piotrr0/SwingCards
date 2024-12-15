@@ -1,5 +1,5 @@
-abstract class flashcard {
-    public boolean isCorrect = false; //checks if answer is correct
+abstract class Flashcard {
+    public boolean is_correct = false; //checks if answer is correct
     protected String question; //the question.
 
     abstract void printOut(); //prints out the flashcard for usage
@@ -7,11 +7,11 @@ abstract class flashcard {
     abstract void checkAnswer(); //checks if answer is right
 }
 
-class flashcardText extends flashcard {
+class FlashcardText extends Flashcard {
 
 private String answer; //answer to the question
 
-    flashcardText(String question, String answer) {
+    FlashcardText(String question, String answer) {
       this.question = question;
       this.answer = answer;
     }
@@ -30,7 +30,7 @@ private String answer; //answer to the question
     @Override
     void checkAnswer() {
         if(question == answer){
-            isCorrect = true;
+            is_correct = true;
         }
         //no need to change to 0 it already is 0
     }
