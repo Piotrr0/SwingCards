@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class GuiWindow {
     /**It is an instance of the window that is being displayed. */
     private JFrame window;
-    /**It is ant instance of the menu bar that is displayed at the top of the screen */
+    /**It is an instance of the menu bar that is displayed at the top of the screen */
     private JPanel menu;
     /**It is the section that displays the most important section under the menu bar*/
     private JPanel main_section;
@@ -26,13 +26,15 @@ public class GuiWindow {
 
         //Most of these is just styling components to look better
 
-        //Creating instances of window and frame
-        window = new JFrame();
+        //Creating instances of window and frame with title
+        window = new JFrame("Flashcards");
+        //so that not-maximized window has a resolution higher than 0
+        window.setSize(1280, 720);
 
         menu = new JPanel();
         // Add a thin border at the bottom
         menu.setBackground(Color.white);
-        menu.setBorder(new MatteBorder(0, 0, 1, 0, Color.BLACK));
+        menu.setBorder(new MatteBorder(1, 0, 1, 0, Color.BLACK));
 
         catalogues_button = new JButton("Catalogues");
         add_button = new JButton("Add");
