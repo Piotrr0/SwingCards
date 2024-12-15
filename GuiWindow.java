@@ -87,7 +87,7 @@ public class GuiWindow {
         add_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GuiAddFlashcard guiAddFlashcard = new GuiAddFlashcard("Add flash card", 600, 400);
+                GuiAddFlashcard guiAddFlashcard = new GuiAddFlashcard("Add flash card", 800, 400);
             }
         });
     }
