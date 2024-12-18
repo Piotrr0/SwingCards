@@ -1,3 +1,5 @@
+import DirectoryPanel.DictionaryPanel;
+
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
 import java.awt.*;
@@ -122,6 +124,12 @@ public class GuiWindow {
 
         File flashcards_directory = new File("flashcards");
         DictionaryPanel dictionary_panel = new DictionaryPanel(main_section, flashcards_directory);
+
+        // When the file is clicked it will be triggered
+        dictionary_panel.addFileSelectionListener(file -> {
+            // Add logic here to manipulate the selected file as needed
+            System.out.println("Selected file: " + file.getName());
+        });
 
         main_section.add(dictionary_panel);
     }

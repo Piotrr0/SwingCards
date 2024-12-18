@@ -1,3 +1,5 @@
+package DirectoryPanel;
+
 import javax.swing.*;
 import javax.swing.tree.*;
 import javax.swing.event.*;
@@ -8,17 +10,17 @@ public class DictionaryPanel extends JPanel
 {
     private final JPanel main_section;
     private final JTree file_tree;
+    private FileSelectionListener file_selection_listener;
+
+    /*
+     * Why "Loading..." is necessary:
+     * Allows directories to be expandable even if initially empty
+     * Provides visual indication that more content can be loaded
+     * Enables lazy loading of directory contents for better performance
+     */
 
     public DictionaryPanel(JPanel main_section, File rootDirectory)
     {
-
-        /*
-        * Why "Loading..." is necessary:
-        * Allows directories to be expandable even if initially empty
-        * Provides visual indication that more content can be loaded
-        * Enables lazy loading of directory contents for better performance
-        */
-
         this.main_section = main_section;
         setLayout(new BorderLayout());
 
@@ -67,10 +69,18 @@ public class DictionaryPanel extends JPanel
 
             if (selectedFile.isFile())
             {
-                // TODO: Add a listener for file selection
+                if (file_selection_listener != null)
+                {
+                    file_selection_listener.onFileSelected(selectedFile);
+                }
             }
         });
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    }
+
+    public void addFileSelectionListener(FileSelectionListener listener)
+    {
+        this.file_selection_listener = listener;
     }
 
     // Create the JTree with the directory structure starting from the root directory
