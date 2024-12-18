@@ -3,6 +3,7 @@ import javax.swing.border.MatteBorder;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Vector;
 /**
@@ -119,8 +120,10 @@ public class GuiWindow {
         //It removes all components
         main_section.removeAll();
 
-        JLabel test = new JLabel("There should be a list of your catalogues");
-        main_section.add(test);
+        File flashcards_directory = new File("flashcards");
+        DictionaryPanel dictionary_panel = new DictionaryPanel(main_section, flashcards_directory);
+
+        main_section.add(dictionary_panel);
     }
 
     /**
