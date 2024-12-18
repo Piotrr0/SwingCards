@@ -3,7 +3,7 @@ abstract class Flashcard {
     protected String question; //the question.
     public char type; //type of flashcard (so programme knows what to draw on screen)
 
-    abstract void printOut(); //prints out the flashcard for usage
+    abstract String printOut(int which_one); //prints out specific part of flashcard for outputting
     abstract void printOutDebug(); //prints out the flashcard for debugging
     abstract public String toString();
     abstract void checkAnswer();
@@ -22,18 +22,32 @@ class FlashcardText extends Flashcard {
     }
 
     @Override
-    void printOut() {
-        System.out.println(question);
+    public String printOut(int which_one) {
+        switch(which_one) { //incredibly useful for printing out specific parts of flashcard in swing
+            case (0): {
+                return question;
+            }
+            case (1): {
+                return answer;
+            }
+            case (2): {
+                return input_answer;
+            }
+            default:
+            {
+                return "";
+            }
+        }
     }
 
     @Override
-    void printOutDebug() {
+    public void printOutDebug() {
         System.out.println("pytanie" +  question);
         System.out.println("odpowiedz" + answer);
     }
 
     @Override
-    void overwriteValues(String new_message, int which_one) {
+    public void overwriteValues(String new_message, int which_one) {
         switch(which_one) { //choosing what to overwrite
             case(0): {
                 question = new_message;
@@ -47,6 +61,10 @@ class FlashcardText extends Flashcard {
                 input_answer = new_message; //btw this whole overwriting values function exists as an excuse for being able to save the input answer somewhere
                 break;
             }
+            default:
+            {
+                return;
+            }
         }
 
     }
@@ -59,7 +77,7 @@ class FlashcardText extends Flashcard {
 
 
     @Override
-    void checkAnswer() {
+    public void checkAnswer() {
         if(input_answer == answer){
             is_correct = true;
         }
