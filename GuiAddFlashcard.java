@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Enumeration;
 import java.util.Vector;
 
 /* Gui that pops up while add button is clicked */
@@ -9,8 +10,9 @@ public class GuiAddFlashcard
 {
     private final JButton add_button;
     private final JButton close_button;
-    private final JButton save_question_button;
-    private final JButton save_answer_button;
+
+    //It is a group of radio buttons, each radio button represents different flashcard type
+    private final ButtonGroup flashcard_type_group;
 
     private final JTextField text_answer;
     private final JTextField text_question;
@@ -18,14 +20,28 @@ public class GuiAddFlashcard
     private String saved_question;
     private String saved_answer;
 
-    private final JLabel saved_question_label;
-    private final JLabel saved_answer_label;
+
 
     private final JFrame add_flashcard_window;
 
+    /**
+     * Function is used to return the string based on selected radio button
+     * @param buttonGroup is a group of radio buttons
+     * @return <code>getActionCommand()</code> of selected radio button
+     * */
+    private String getSelectedButtonActionCommand(ButtonGroup buttonGroup) {
+        for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
+            AbstractButton button = buttons.nextElement();
 
+            if (button.isSelected()) {
+                return button.getActionCommand();
+            }
+        }
 
-    GuiAddFlashcard(String title, int width, int height, Vector<Flashcard> text_ones)
+        return null;
+    }
+
+    GuiAddFlashcard(String title, int width, int height, Vector<Flashcard> new_flashcard)
     {
         // Init JFrame
         add_flashcard_window = new JFrame(title);
@@ -45,8 +61,7 @@ public class GuiAddFlashcard
         text_question = new JTextField();
         text_question.setMaximumSize(new Dimension(300, text_question.getPreferredSize().height));
         //button for saving question
-        save_question_button = new JButton("Save Question");
-        save_question_button.setAlignmentX(Component.CENTER_ALIGNMENT);
+
 
         //same thing but for answer
         JLabel add_answer = new JLabel("Enter Answer:");
@@ -55,15 +70,14 @@ public class GuiAddFlashcard
         text_answer = new JTextField();
         text_answer.setMaximumSize(new Dimension(300, text_question.getPreferredSize().height));
         //button for saving answer
-        save_answer_button = new JButton("Save Answer");
-        save_answer_button.setAlignmentX(Component.CENTER_ALIGNMENT);
+
 
         //adding question
         input_panel.add(add_question);
         input_panel.add(Box.createVerticalStrut(10)); //vertical distance
         input_panel.add(text_question);
         input_panel.add(Box.createVerticalStrut(10)); //vertical distance
-        input_panel.add(save_question_button);
+
         input_panel.add(Box.createVerticalStrut(40)); //vertical distance
 
         //adding answer
@@ -71,25 +85,36 @@ public class GuiAddFlashcard
         input_panel.add(Box.createVerticalStrut(10)); //vertical distance
         input_panel.add(text_answer);
         input_panel.add(Box.createVerticalStrut(10)); //vertical distance
-        input_panel.add(save_answer_button);
+
         add_flashcard_window.add(input_panel, BorderLayout.NORTH);
 
-        //JPanel for showing current saved stuff
-        JPanel output_panel = new JPanel();
+        //JPanel that allows user to choose desired flashcard type (e.g writing or yes/no question)
+        JPanel flashcard_type_panel= new JPanel();
         //top to bottom component placement
-        output_panel.setLayout(new BoxLayout(output_panel, BoxLayout.Y_AXIS));
+        flashcard_type_panel.setLayout(new BoxLayout(flashcard_type_panel, BoxLayout.Y_AXIS));
 
-        //output labels
-        saved_question_label= new JLabel("Saved Question: ");
-        saved_question_label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        saved_answer_label = new JLabel("Saved Answer: ");
-        saved_answer_label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        JLabel select_flashcard_type_label = new JLabel("Select flashcard type");
+        //It is a group of radio buttons, each radio button represents different flashcard type
+        this.flashcard_type_group = new ButtonGroup();
+        /*If user chooses text_type, the text_type button returns string "text"*/
+        JRadioButton text_type = new JRadioButton("Text (default)");
+        text_type.setActionCommand("text");
+
+        /*If user chooses abcd_type, the text_type button returns string "abcd"*/
+        JRadioButton abcd_type = new JRadioButton("ABCD");
+        abcd_type.setActionCommand("abcd");
+        flashcard_type_group.add(text_type);
+        flashcard_type_group.add(abcd_type);
+
+        flashcard_type_panel.add(select_flashcard_type_label);
+        flashcard_type_panel.add(text_type);
+        flashcard_type_panel.add(abcd_type);
 
         input_panel.add(Box.createVerticalStrut(40)); //vertical distance
-        output_panel.add(saved_question_label);
+
         input_panel.add(Box.createVerticalStrut(10)); //vertical distance
-        output_panel.add(saved_answer_label);
-        add_flashcard_window.add(output_panel, BorderLayout.CENTER);
+
+        add_flashcard_window.add(flashcard_type_panel, BorderLayout.CENTER);
 
 
 
@@ -104,17 +129,48 @@ public class GuiAddFlashcard
 
         add_flashcard_window.add(bottom_panel, BorderLayout.SOUTH); // Add to the bottom
 
-        addButtonListeners(text_ones);
+        addButtonListeners(new_flashcard);
+
+
 
         add_flashcard_window.setVisible(true);
     }
 
-    private void addButtonListeners(Vector<Flashcard> text_ones)
+    /**
+     * Function is responsible for binding a button to the operation of adding a flashcard.
+     */
+    private void addButtonListeners(Vector<Flashcard> new_flashcard)
     {
         add_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                text_ones.add(new FlashcardText(saved_question, saved_answer)); //polymorphism!
+                saved_question = text_question.getText();
+                saved_answer = text_answer.getText();
+
+                //We check which radio button was selected, below are possibilites
+                /*
+                * text - indicates that type of flashcard is text
+                * abcd - indicated that type of flashcard is abcd
+                * */
+                String flashcard_type = getSelectedButtonActionCommand(flashcard_type_group);
+                //We create flashcard based on its type,POLYMORPHISM!!!!!!!
+                switch (flashcard_type) {
+                    case "text":
+                        System.out.println("Flashcard type is 'TEXT'.");
+                        new_flashcard.add(new FlashcardText(saved_question, saved_answer)); //polymorphism!
+                        // Add your specific logic for "test" here
+                        break;
+                    case "abcd":
+                        System.out.println("Flashcard type is 'abcd'.");
+                        // Add your specific logic for "abcd" here
+                        break;
+                    default:
+                        System.out.println("Unknown flashcard type.");
+                        // Add your default case logic here
+                        break;
+                }
+
+
                 JOptionPane.showMessageDialog(add_flashcard_window, "Flashcard added!");
                 add_flashcard_window.dispose(); // Close the window
             }
@@ -127,28 +183,8 @@ public class GuiAddFlashcard
             }
         });
 
-        save_question_button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Save question from text field
-                saved_question = text_question.getText();
 
-                // Display the saved answer in the label
-                saved_question_label.setText("Saved Question: " + saved_question);
-            }
 
-        });
 
-        save_answer_button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // Save question from text field
-                saved_answer = text_answer.getText();
-
-                // Display the saved text in the label
-                saved_answer_label.setText("Saved Answer: " + saved_answer);
-            }
-
-        });
     }
 }
