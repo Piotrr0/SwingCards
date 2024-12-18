@@ -1,22 +1,58 @@
 import javax.swing.*;
 import javax.swing.tree.*;
+import javax.swing.event.*;
 import java.awt.*;
 import java.io.File;
 
-// Class is not finished yet!
-
 public class DictionaryPanel extends JPanel
 {
-    private JPanel main_section;
+    private final JPanel main_section;
+    private final JTree file_tree;
 
     public DictionaryPanel(JPanel main_section, File rootDirectory)
     {
+
+        /*
+        * Why "Loading..." is necessary:
+        * Allows directories to be expandable even if initially empty
+        * Provides visual indication that more content can be loaded
+        * Enables lazy loading of directory contents for better performance
+        */
+
         this.main_section = main_section;
         setLayout(new BorderLayout());
 
-        JTree file_tree = createFileTree(rootDirectory);
+        file_tree = createFileTree(rootDirectory);
         file_tree.setRowHeight(28);
         file_tree.setFont(new Font("Monospaced", Font.PLAIN, 24));
+
+        // Add tree expansion listener for dynamic folder loading
+        file_tree.addTreeExpansionListener(new TreeExpansionListener()
+        {
+            @Override
+            public void treeExpanded(TreeExpansionEvent event)
+            {
+                TreePath path = event.getPath();
+                DefaultMutableTreeNode node = (DefaultMutableTreeNode) path.getLastPathComponent();
+
+                // Remove the dummy "Loading..." node and add real subdirectories
+                if (node.getChildCount() == 1 && node.getFirstChild().toString().equals("Loading..."))
+                {
+                    node.removeAllChildren();
+                    File file = (File) node.getUserObject();
+                    createTreeNodes(node, file);
+
+                    // Reload the tree model to reflect changes
+                    ((DefaultTreeModel)file_tree.getModel()).reload(node);
+                }
+            }
+
+            @Override
+            public void treeCollapsed(TreeExpansionEvent event)
+            {
+
+            }
+        });
 
         // Add the file tree to panel
         add(new JScrollPane(file_tree), BorderLayout.CENTER);
@@ -24,22 +60,21 @@ public class DictionaryPanel extends JPanel
         // Add tree listener to handle file and directory selection
         file_tree.addTreeSelectionListener(event ->
         {
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode)
-                    file_tree.getLastSelectedPathComponent();
+            DefaultMutableTreeNode node = (DefaultMutableTreeNode)file_tree.getLastSelectedPathComponent();
             if (node == null) return;
 
             File selectedFile = (File) node.getUserObject();
 
             if (selectedFile.isFile())
             {
-                // TODO: Add a listener
+                // TODO: Add a listener for file selection
             }
         });
         setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
     }
 
     // Create the JTree with the directory structure starting from the root directory
-    private static JTree createFileTree(File rootDirectory)
+    private JTree createFileTree(File rootDirectory)
     {
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(rootDirectory);
         createTreeNodes(root, rootDirectory);
@@ -47,20 +82,29 @@ public class DictionaryPanel extends JPanel
         JTree tree = new JTree(root);
         tree.setRootVisible(true);
         tree.setShowsRootHandles(true);
-        tree.setCellRenderer(new FileTreeCellRenderer()); // Customize appearance
+        tree.setCellRenderer(new FileTreeCellRenderer());
         return tree;
     }
 
     // Recursively populate the tree with nodes
-    private static void createTreeNodes(DefaultMutableTreeNode parent, File file)
+    private void createTreeNodes(DefaultMutableTreeNode parent, File file)
     {
         File[] files = file.listFiles();
-        if (files != null) {
-            for (File f : files) {
+        if (files != null)
+        {
+            for (File f : files)
+            {
+                // Skip hidden files or files you can't read
+                if (f.isHidden() || !f.canRead()) continue;
+
                 DefaultMutableTreeNode child = new DefaultMutableTreeNode(f);
                 parent.add(child);
-                if (f.isDirectory()) {
-                    createTreeNodes(child, f);
+
+                if (f.isDirectory())
+                {
+                    // Add a dummy node to allow expansion
+                    child.add(new DefaultMutableTreeNode("Loading..."));
+                    child.setAllowsChildren(true);
                 }
             }
         }
@@ -72,12 +116,35 @@ public class DictionaryPanel extends JPanel
         @Override
         public Component getTreeCellRendererComponent(JTree tree, Object value,
                                                       boolean sel, boolean expanded,
-                                                      boolean leaf, int row, boolean hasFocus) {
+                                                      boolean leaf, int row, boolean hasFocus)
+        {
             Component c = super.getTreeCellRendererComponent(
                     tree, value, sel, expanded, leaf, row, hasFocus);
-            DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-            File file = (File) node.getUserObject();
-            setText(file.getName());
+
+            if (value instanceof DefaultMutableTreeNode node)
+            {
+                // Handle the "Loading..." dummy node
+                if (node.toString().equals("Loading..."))
+                {
+                    setText("Loading...");
+                    return c;
+                }
+
+                // Regular file/directory rendering
+                if (node.getUserObject() instanceof File file)
+                {
+                    setText(file.getName());
+
+                    if (file.isDirectory())
+                    {
+                        setIcon(UIManager.getIcon("FileView.directoryIcon"));
+                    } else
+                    {
+                        setIcon(UIManager.getIcon("FileView.fileIcon"));
+                    }
+                }
+            }
+
             return c;
         }
     }
