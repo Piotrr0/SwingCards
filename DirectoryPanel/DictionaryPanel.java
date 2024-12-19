@@ -67,7 +67,7 @@ public class DictionaryPanel extends JPanel
 
             File selectedFile = (File) node.getUserObject();
 
-            if (selectedFile.isFile())
+            if (selectedFile.isFile() || selectedFile.isDirectory())
             {
                 if (file_selection_listener != null)
                 {

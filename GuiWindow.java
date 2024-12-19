@@ -1,4 +1,6 @@
 import DirectoryPanel.DictionaryPanel;
+import DirectoryPanel.FileSelectionListener;
+import Libraries.FlashcardLibrary;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -22,10 +24,14 @@ public class GuiWindow {
     private JButton catalogues_button,add_button,inspect_button,profile_button;
     /**It is the font sized used for normal text*/
     private int normal_font_size =30;
+
     private File flashcards_directory;
     private DictionaryPanel dictionary_panel;
+
     //It indicates which catalogue is currently chosen, used to know destination folder
-    private String selected_file;
+    private File selected_file;
+
+    private boolean is_inspecting;
 
     public GuiWindow(){
 
@@ -89,15 +95,17 @@ public class GuiWindow {
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setVisible(true);
 
-
-
         add_button.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                GuiAddFlashcard guiAddFlashcard = new GuiAddFlashcard("Add flash card", 800, 400,selected_file);
+            public void actionPerformed(ActionEvent e)
+            {
+                if(selected_file != null && selected_file.isDirectory())
+                {
+                    String relative_path = FlashcardLibrary.getRelativePath(selected_file.getAbsolutePath());
+                    GuiAddFlashcard gui_add_flashcard = new GuiAddFlashcard("Add flash card", 800, 400, relative_path);
+                }
             }
         });
-
 
         catalogues_button.addActionListener(new ActionListener() {
             @Override
@@ -107,18 +115,14 @@ public class GuiWindow {
 
         });
 
-        inspect_button.addActionListener(new ActionListener() {
+        //TODO:
+        inspect_button.addActionListener(new ActionListener()
+        {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                main_section.removeAll();
-                main_section.setLayout(new BoxLayout(main_section, BoxLayout.Y_AXIS)); //vertical layout
-                JLabel Questions = new JLabel("Tutaj powinny sie wyswietlac fiszki z katalogu "+selected_file+",ale jeszcze nie ma zapisu/odczytu plików");
-
-                Questions.setAlignmentX(Component.CENTER_ALIGNMENT);
-                main_section.add(Questions);
-
-                main_section.repaint(); //crucial for the JPanel update to work
-                main_section.revalidate(); //also crucial for the JPanel
+            public void actionPerformed(ActionEvent e)
+            {
+                is_inspecting = !is_inspecting;
+                System.out.println(is_inspecting);
             }
 
         });
@@ -127,8 +131,8 @@ public class GuiWindow {
     /**
      * It sets <code>main_section</code> to default. By default it shows a list of catalogues
      * */
-    private void mainSectionDefault(){
-        System.out.println("It should show a list of catalogues right now");
+    private void mainSectionDefault()
+    {
         //It removes all components
         main_section.removeAll();
 
@@ -136,14 +140,16 @@ public class GuiWindow {
         this.dictionary_panel = new DictionaryPanel(main_section, flashcards_directory);
 
         // When the file is clicked it will be triggered
-        dictionary_panel.addFileSelectionListener(file -> {
-            // Add logic here to manipulate the selected file as needed
-            this.selected_file = file.getName();
-            System.out.println("Selected file: " + file.getName());
+        dictionary_panel.addFileSelectionListener(new FileSelectionListener()
+        {
+            @Override
+            public void onFileSelected(File file)
+            {
+                selected_file = file;
+            }
         });
 
         main_section.add(dictionary_panel);
-        window.setVisible(true);
     }
 
     /**
@@ -156,6 +162,4 @@ public class GuiWindow {
         JLabel test = new JLabel("It should display while learning flashcards");
         main_section.add(test);
     }
-
-
 }
