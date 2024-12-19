@@ -1,9 +1,11 @@
+import FlashcardTypes.Flashcard;
+import FlashcardTypes.FlashcardText;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Enumeration;
-import java.util.Vector;
 
 /* Gui that pops up while add button is clicked */
 public class GuiAddFlashcard

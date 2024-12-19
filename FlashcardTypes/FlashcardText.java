@@ -1,28 +1,14 @@
-abstract class Flashcard {
-    public boolean is_correct = false; //checks if answer is correct
-    protected String question; //the question.
-    public char type; //type of flashcard (so programme knows what to draw on screen)
+package FlashcardTypes;
 
-    abstract String printOut(int which_one); //prints out specific part of flashcard for outputting
-    abstract void printOutDebug(); //prints out the flashcard for debugging
-    abstract public String toString();
-    abstract void checkAnswer();
-    abstract void overwriteValues(String new_message, int which_one); //function for changing content of flashcards
-    public static void appendToFile(Flashcard flashcard,String filepath){
-
-        System.out.println("appending to file");
-    }
-}
-
-class FlashcardText extends Flashcard {
+public class FlashcardText extends Flashcard {
 
     private String answer; //answer to the question
     private String input_answer =""; //user's inputted answer, nothing by default
 
-    FlashcardText(String question, String answer) {
-      this.question = question;
-      this.answer = answer;
-      this.type = 't'; //t -> text
+    public FlashcardText(String question, String answer) {
+        this.question = question;
+        this.answer = answer;
+        this.type = 't'; //t -> text
     }
 
     @Override
@@ -42,12 +28,6 @@ class FlashcardText extends Flashcard {
                 return "";
             }
         }
-    }
-
-    @Override
-    public void printOutDebug() {
-        System.out.println("pytanie" +  question);
-        System.out.println("odpowiedz" + answer);
     }
 
     @Override
@@ -78,8 +58,6 @@ class FlashcardText extends Flashcard {
         return "question: " + question + " answer: " + answer;
     }
 
-
-
     @Override
     public void checkAnswer() {
         if(input_answer == answer){
@@ -87,7 +65,4 @@ class FlashcardText extends Flashcard {
         }
         //no need to change to 0 it already is 0
     }
-
-
 }
-
