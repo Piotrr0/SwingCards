@@ -1,5 +1,4 @@
 import DirectoryPanel.DictionaryPanel;
-import DirectoryPanel.FileSelectionListener;
 import Libraries.FlashcardLibrary;
 
 import javax.swing.*;
@@ -8,94 +7,124 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Vector;
+
+
 /**
- * Class is responsible for creating  a window using java swing
+ * Creates and manages the main application window
+ * Handles the layout and interaction of the flashcard application interface.
  */
-public class GuiWindow {
+public class GuiWindow
+{
+    private static final int DEFAULT_WINDOW_WIDTH = 1280;
+    private static final int DEFAULT_WINDOW_HEIGHT = 720;
+    private static final int NORMAL_FONT_SIZE = 30;
+
     /**It is an instance of the window that is being displayed. */
-    private JFrame window;
+    private final JFrame window;
     /**It is an instance of the menu bar that is displayed at the top of the screen */
-    private JPanel menu;
+    private final JPanel menu;
     /**It is the section that displays the most important section under the menu bar*/
-    private JPanel main_section;
-    /**Button used inside menu bar*/
-    private JButton catalogues_button,add_button,inspect_button,profile_button;
-    /**It is the font sized used for normal text*/
-    private int normal_font_size =30;
+    private final JPanel main_section;
+
+    // Menu buttons
+    private final JButton catalogues_button;
+    private final JButton add_button;
+    private final JButton inspect_button;
+    private final JButton profile_button;
 
     private File flashcards_directory;
     private DictionaryPanel dictionary_panel;
-
-    //It indicates which catalogue is currently chosen, used to know destination folder
     private File selected_file;
-
     private boolean is_inspecting;
 
-    public GuiWindow(){
+    public GuiWindow() {
+        window = createMainWindow();
+        menu = createMenuPanel();
+        main_section = createMainSection();
 
-        //Most of these is just styling components to look better
+        // Initialize menu buttons
+        catalogues_button = createMenuButton("Catalogues");
+        add_button = createMenuButton("Add");
+        inspect_button = createMenuButton("Inspect");
+        profile_button = createMenuButton("Profile");
 
-        //Creating instances of window and frame with title
-        window = new JFrame("Flashcards");
-        //so that not-maximized window has a resolution higher than 0
-        window.setSize(1280, 720);
+        setupLayout();
+        setupEventListeners();
 
-        menu = new JPanel();
-        // Add a thin border at the bottom
-        menu.setBackground(Color.white);
-        menu.setBorder(new MatteBorder(1, 0, 1, 0, Color.BLACK));
+        window.setVisible(true);
+    }
 
-        catalogues_button = new JButton("Catalogues");
-        add_button = new JButton("Add");
-        inspect_button = new JButton("Inspect");
-        profile_button = new JButton("Profile");
+    /**
+     * Creates and configures the main application window.
+     */
+    private JFrame createMainWindow()
+    {
+        JFrame frame = new JFrame("Flashcards");
+        frame.setSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setLayout(new BorderLayout());
+        return frame;
+    }
 
-        /**It is a collection of buttons that are inside menu bar, it is useful for group styling*/
-        ArrayList<JButton> button_list = new ArrayList<>(){{
-            add(catalogues_button);
-            add(add_button);
-            add(inspect_button);
-            add(profile_button);
-        }};
+    /**
+     * Creates and configures the menu panel.
+     */
+    private JPanel createMenuPanel()
+    {
+        JPanel panel = new JPanel(new FlowLayout());
+        panel.setBackground(Color.WHITE);
+        panel.setBorder(new MatteBorder(1, 0, 1, 0, Color.BLACK));
+        return panel;
+    }
 
+    /**
+     * Creates and configures the main content section.
+     */
+    private JPanel createMainSection() {
+        JPanel panel = new JPanel();
+        panel.setBackground(Color.WHITE);
+        return panel;
+    }
 
-        //Styling all buttons inside collection
-        for(int i =0;i<button_list.size();i++){
-            button_list.get(i).setBackground(Color.white);
-            button_list.get(i).setForeground(Color.black);
-            button_list.get(i).setFocusPainted(false);
+    /**
+     * Creates a styled menu button with the given text.
+     */
+    private JButton createMenuButton(String button_text)
+    {
+        JButton button = new JButton(button_text);
+        button.setBackground(Color.WHITE);
+        button.setForeground(Color.BLACK);
+        button.setFocusPainted(false);
+        return button;
+    }
 
-        }
-
-
-
-
-        main_section = new JPanel();
-        main_section.setBackground(Color.WHITE);
-        mainSectionDefault();
-
-        //Window uses BorderLayout, menu is at the top(north) and main content is below
-        window.setLayout(new BorderLayout());
-
-        //It makes app fullscreen during first launch
-        window.setExtendedState(JFrame.MAXIMIZED_BOTH);
-
-        window.add(menu,BorderLayout.NORTH);
-        window.add(main_section,BorderLayout.CENTER);
-
+    /**
+     * Sets up the main window layout and adds all components.
+     */
+    private void setupLayout()
+    {
+        // Add menu buttons to menu panel
         menu.add(catalogues_button);
         menu.add(add_button);
         menu.add(inspect_button);
         menu.add(profile_button);
-        menu.setLayout(new FlowLayout()); // Arrange components in a row
 
-        //Exit the program when you close the window
-        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        window.setVisible(true);
+        // Add panels to main window
+        window.add(menu, BorderLayout.NORTH);
+        window.add(main_section, BorderLayout.CENTER);
 
-        add_button.addActionListener(new ActionListener() {
+        // Initialize default view
+        mainSectionDefault();
+    }
+
+    /**
+     * Sets up event listeners for all interactive components.
+     */
+    private void setupEventListeners()
+    {
+        add_button.addActionListener(new ActionListener()
+        {
             @Override
             public void actionPerformed(ActionEvent e)
             {
@@ -107,7 +136,8 @@ public class GuiWindow {
             }
         });
 
-        catalogues_button.addActionListener(new ActionListener() {
+        catalogues_button.addActionListener(new ActionListener()
+        {
             @Override
             public void actionPerformed(ActionEvent e) {
                 mainSectionDefault();
@@ -129,37 +159,40 @@ public class GuiWindow {
     }
 
     /**
-     * It sets <code>main_section</code> to default. By default it shows a list of catalogues
-     * */
+     * Shows the default view with the catalogue listing.
+     */
     private void mainSectionDefault()
     {
-        //It removes all components
         main_section.removeAll();
 
-        this.flashcards_directory = new File("flashcards");
-        this.dictionary_panel = new DictionaryPanel(main_section, flashcards_directory);
-
-        // When the file is clicked it will be triggered
-        dictionary_panel.addFileSelectionListener(new FileSelectionListener()
+        flashcards_directory = new File("flashcards");
+        dictionary_panel = new DictionaryPanel(main_section, flashcards_directory);
+        dictionary_panel.addFileSelectionListener(file ->
         {
-            @Override
-            public void onFileSelected(File file)
-            {
-                selected_file = file;
-            }
+            selected_file = file;
         });
 
         main_section.add(dictionary_panel);
+
+        RefreshView();
     }
 
     /**
-     * It sets <code>main_section</code> to change its content for learning.
-     * */
-    private void mainSectionLearning(){
-        //It removes all components
+     * Shows the learning view for flashcard study.
+     */
+    private void showLearningView()
+    {
         main_section.removeAll();
+        main_section.add(new JLabel("It should display while learning flashcards"));
+        RefreshView();
+    }
 
-        JLabel test = new JLabel("It should display while learning flashcards");
-        main_section.add(test);
+    /**
+     * Refresh the view
+     */
+    private void RefreshView()
+    {
+        main_section.revalidate();
+        main_section.repaint();
     }
 }
