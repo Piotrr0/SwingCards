@@ -8,6 +8,10 @@ abstract class Flashcard {
     abstract public String toString();
     abstract void checkAnswer();
     abstract void overwriteValues(String new_message, int which_one); //function for changing content of flashcards
+    public static void appendToFile(Flashcard flashcard,String filepath){
+
+        System.out.println("appending to file");
+    }
 }
 
 class FlashcardText extends Flashcard {

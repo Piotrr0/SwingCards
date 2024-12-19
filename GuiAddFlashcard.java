@@ -41,7 +41,10 @@ public class GuiAddFlashcard
         return null;
     }
 
-    GuiAddFlashcard(String title, int width, int height, Vector<Flashcard> new_flashcard)
+    /**
+     * @param catalogue_name indicate the name of catalogue we are adding a flashcard to.
+     * */
+    GuiAddFlashcard(String title, int width, int height,String catalogue_name)
     {
         // Init JFrame
         add_flashcard_window = new JFrame(title);
@@ -61,6 +64,9 @@ public class GuiAddFlashcard
         text_question = new JTextField();
         text_question.setMaximumSize(new Dimension(300, text_question.getPreferredSize().height));
         //button for saving question
+
+        JLabel catalogue_name_label = new JLabel("You are adding a flashcard to "+catalogue_name);
+        catalogue_name_label.setAlignmentX(Component.CENTER_ALIGNMENT); //centers the field
 
 
         //same thing but for answer
@@ -85,6 +91,7 @@ public class GuiAddFlashcard
         input_panel.add(Box.createVerticalStrut(10)); //vertical distance
         input_panel.add(text_answer);
         input_panel.add(Box.createVerticalStrut(10)); //vertical distance
+        input_panel.add(catalogue_name_label);
 
         add_flashcard_window.add(input_panel, BorderLayout.NORTH);
 
@@ -99,6 +106,8 @@ public class GuiAddFlashcard
         /*If user chooses text_type, the text_type button returns string "text"*/
         JRadioButton text_type = new JRadioButton("Text (default)");
         text_type.setActionCommand("text");
+        //Make text a default type of flashcard
+        text_type.setSelected(true);
 
         /*If user chooses abcd_type, the text_type button returns string "abcd"*/
         JRadioButton abcd_type = new JRadioButton("ABCD");
@@ -129,7 +138,7 @@ public class GuiAddFlashcard
 
         add_flashcard_window.add(bottom_panel, BorderLayout.SOUTH); // Add to the bottom
 
-        addButtonListeners(new_flashcard);
+        addButtonListeners();
 
 
 
@@ -139,7 +148,7 @@ public class GuiAddFlashcard
     /**
      * Function is responsible for binding a button to the operation of adding a flashcard.
      */
-    private void addButtonListeners(Vector<Flashcard> new_flashcard)
+    private void addButtonListeners()
     {
         add_button.addActionListener(new ActionListener() {
             @Override
@@ -157,16 +166,17 @@ public class GuiAddFlashcard
                 switch (flashcard_type) {
                     case "text":
                         System.out.println("Flashcard type is 'TEXT'.");
-                        new_flashcard.add(new FlashcardText(saved_question, saved_answer)); //polymorphism!
-                        // Add your specific logic for "test" here
+                        Flashcard new_flashcard = new FlashcardText(saved_question,saved_answer); //Polymorpism
+                        Flashcard.appendToFile(new_flashcard,"flashcards1.txt");
+
                         break;
                     case "abcd":
                         System.out.println("Flashcard type is 'abcd'.");
-                        // Add your specific logic for "abcd" here
+
                         break;
                     default:
                         System.out.println("Unknown flashcard type.");
-                        // Add your default case logic here
+
                         break;
                 }
 

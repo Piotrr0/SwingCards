@@ -22,8 +22,10 @@ public class GuiWindow {
     private JButton catalogues_button,add_button,inspect_button,profile_button;
     /**It is the font sized used for normal text*/
     private int normal_font_size =30;
-
-    private Vector<Flashcard> text_ones = new Vector<>(0); //polymorphism!
+    private File flashcards_directory;
+    private DictionaryPanel dictionary_panel;
+    //It indicates which catalogue is currently chosen, used to know destination folder
+    private String selected_file;
 
     public GuiWindow(){
 
@@ -62,6 +64,8 @@ public class GuiWindow {
         }
 
 
+
+
         main_section = new JPanel();
         main_section.setBackground(Color.WHITE);
         mainSectionDefault();
@@ -90,24 +94,29 @@ public class GuiWindow {
         add_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                GuiAddFlashcard guiAddFlashcard = new GuiAddFlashcard("Add flash card", 800, 400, text_ones);
+                GuiAddFlashcard guiAddFlashcard = new GuiAddFlashcard("Add flash card", 800, 400,selected_file);
             }
         });
 
-        //for now inspect prints out flashcards in memory
+
+        catalogues_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainSectionDefault();
+            }
+
+        });
+
         inspect_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 main_section.removeAll();
                 main_section.setLayout(new BoxLayout(main_section, BoxLayout.Y_AXIS)); //vertical layout
-                JLabel Questions;
-                //hellish function to print questions in memory
-                for(int i =0; i< text_ones.size(); i++){
-                    System.out.println(text_ones.get(i).toString()); //Polymorphism!
-                    Questions = new JLabel(text_ones.get(i).toString());
-                    Questions.setAlignmentX(Component.CENTER_ALIGNMENT);
-                    main_section.add(Questions);
-                }
+                JLabel Questions = new JLabel("Tutaj powinny sie wyswietlac fiszki z katalogu "+selected_file+",ale jeszcze nie ma zapisu/odczytu plików");
+
+                Questions.setAlignmentX(Component.CENTER_ALIGNMENT);
+                main_section.add(Questions);
+
                 main_section.repaint(); //crucial for the JPanel update to work
                 main_section.revalidate(); //also crucial for the JPanel
             }
@@ -116,22 +125,25 @@ public class GuiWindow {
     }
 
     /**
-     * It sets <code>main_section</code> to default.
+     * It sets <code>main_section</code> to default. By default it shows a list of catalogues
      * */
     private void mainSectionDefault(){
+        System.out.println("It should show a list of catalogues right now");
         //It removes all components
         main_section.removeAll();
 
-        File flashcards_directory = new File("flashcards");
-        DictionaryPanel dictionary_panel = new DictionaryPanel(main_section, flashcards_directory);
+        this.flashcards_directory = new File("flashcards");
+        this.dictionary_panel = new DictionaryPanel(main_section, flashcards_directory);
 
         // When the file is clicked it will be triggered
         dictionary_panel.addFileSelectionListener(file -> {
             // Add logic here to manipulate the selected file as needed
+            this.selected_file = file.getName();
             System.out.println("Selected file: " + file.getName());
         });
 
         main_section.add(dictionary_panel);
+        window.setVisible(true);
     }
 
     /**
