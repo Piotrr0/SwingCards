@@ -31,6 +31,7 @@ public class GuiWindow
     private final JButton add_button;
     private final JButton inspect_button;
     private final JButton profile_button;
+    private final JButton add_deck_button;
 
     private File flashcards_directory;
     private DictionaryPanel dictionary_panel;
@@ -47,6 +48,7 @@ public class GuiWindow
         add_button = createMenuButton("Add");
         inspect_button = createMenuButton("Inspect");
         profile_button = createMenuButton("Profile");
+        add_deck_button = createMenuButton("Add Deck");
 
         setupLayout();
         setupEventListeners();
@@ -109,6 +111,7 @@ public class GuiWindow
         menu.add(add_button);
         menu.add(inspect_button);
         menu.add(profile_button);
+        menu.add(add_deck_button);
 
         // Add panels to main window
         window.add(menu, BorderLayout.NORTH);
@@ -145,6 +148,25 @@ public class GuiWindow
 
         });
 
+        add_deck_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(selected_file != null && selected_file.isDirectory())
+                {
+                    String dir_name = JOptionPane.showInputDialog(JOptionPane.getRootFrame(), "Enter directory name:", "Add Deck", JOptionPane.PLAIN_MESSAGE);
+                    if (dir_name != null)
+                    {
+                        File directory = new File(selected_file, dir_name);
+                        if(directory.mkdirs())
+                        {
+                            mainSectionDefault();
+                        }
+                    }
+                }
+            }
+        });
+
         //TODO:
         inspect_button.addActionListener(new ActionListener()
         {
@@ -154,7 +176,6 @@ public class GuiWindow
                 is_inspecting = !is_inspecting;
                 System.out.println(is_inspecting);
             }
-
         });
     }
 
