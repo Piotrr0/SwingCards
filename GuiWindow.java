@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 
 /**
@@ -31,7 +32,7 @@ public class GuiWindow
     private final JButton add_button;
     private final JButton inspect_button;
     private final JButton profile_button;
-    private final JButton add_deck_button;
+    private final JButton add_folder_button;
 
     private File flashcards_directory;
     private DictionaryPanel dictionary_panel;
@@ -45,10 +46,10 @@ public class GuiWindow
 
         // Initialize menu buttons
         catalogues_button = createMenuButton("Catalogues");
-        add_button = createMenuButton("Add");
+        add_button = createMenuButton("Add Deck/Flashcard");
+        add_folder_button = createMenuButton("Add Folder");
         inspect_button = createMenuButton("Inspect");
         profile_button = createMenuButton("Profile");
-        add_deck_button = createMenuButton("Add Deck");
 
         setupLayout();
         setupEventListeners();
@@ -109,9 +110,9 @@ public class GuiWindow
         // Add menu buttons to menu panel
         menu.add(catalogues_button);
         menu.add(add_button);
+        menu.add(add_folder_button);
         menu.add(inspect_button);
         menu.add(profile_button);
-        menu.add(add_deck_button);
 
         // Add panels to main window
         window.add(menu, BorderLayout.NORTH);
@@ -131,10 +132,22 @@ public class GuiWindow
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if(selected_file != null && selected_file.isDirectory())
+                if(selected_file != null && selected_file.isFile())
                 {
                     String relative_path = FlashcardLibrary.getRelativePath(selected_file.getAbsolutePath());
                     GuiAddFlashcard gui_add_flashcard = new GuiAddFlashcard("Add flash card", 800, 400, relative_path);
+                }
+                else if(selected_file != null && selected_file.isDirectory())
+                {
+                    String deck_name = JOptionPane.showInputDialog(JOptionPane.getRootFrame(), "Enter deck name:", "Add Deck", JOptionPane.PLAIN_MESSAGE);
+                    File deck = new File(selected_file, deck_name+".txt");
+                    try
+                    {
+                        deck.createNewFile();
+                    }
+                    catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
             }
         });
@@ -148,13 +161,13 @@ public class GuiWindow
 
         });
 
-        add_deck_button.addActionListener(new ActionListener() {
+        add_folder_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e)
             {
                 if(selected_file != null && selected_file.isDirectory())
                 {
-                    String dir_name = JOptionPane.showInputDialog(JOptionPane.getRootFrame(), "Enter directory name:", "Add Deck", JOptionPane.PLAIN_MESSAGE);
+                    String dir_name = JOptionPane.showInputDialog(JOptionPane.getRootFrame(), "Enter directory name:", "Add Folder", JOptionPane.PLAIN_MESSAGE);
                     if (dir_name != null)
                     {
                         File directory = new File(selected_file, dir_name);
@@ -187,6 +200,11 @@ public class GuiWindow
         main_section.removeAll();
 
         flashcards_directory = new File("flashcards");
+        if(!flashcards_directory.exists())
+        {
+            flashcards_directory.mkdir();
+        }
+
         dictionary_panel = new DictionaryPanel(main_section, flashcards_directory);
         dictionary_panel.addFileSelectionListener(file ->
         {
