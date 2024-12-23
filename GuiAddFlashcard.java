@@ -1,4 +1,5 @@
 import FlashcardTypes.Flashcard;
+import FlashcardTypes.FlashcardABCD;
 import FlashcardTypes.FlashcardText;
 
 import javax.swing.*;
@@ -22,6 +23,7 @@ public class GuiAddFlashcard
     private String saved_question;
     private String saved_answer;
 
+    private String current_file;
 
 
     private final JFrame add_flashcard_window;
@@ -44,9 +46,9 @@ public class GuiAddFlashcard
     }
 
     /**
-     * @param catalogue_name indicate the name of catalogue we are adding a flashcard to.
+     * @param filename indicate the name of catalogue we are adding a flashcard to.
      * */
-    GuiAddFlashcard(String title, int width, int height,String catalogue_name)
+    GuiAddFlashcard(String title, int width, int height,String filename)
     {
         // Init JFrame
         add_flashcard_window = new JFrame(title);
@@ -67,7 +69,8 @@ public class GuiAddFlashcard
         text_question.setMaximumSize(new Dimension(300, text_question.getPreferredSize().height));
         //button for saving question
 
-        JLabel catalogue_name_label = new JLabel("You are adding a flashcard to "+catalogue_name);
+        JLabel catalogue_name_label = new JLabel("You are adding a flashcard to "+filename);
+        this.current_file = filename;
         catalogue_name_label.setAlignmentX(Component.CENTER_ALIGNMENT); //centers the field
 
 
@@ -165,15 +168,16 @@ public class GuiAddFlashcard
                 * */
                 String flashcard_type = getSelectedButtonActionCommand(flashcard_type_group);
                 //We create flashcard based on its type,POLYMORPHISM!!!!!!!
+                Flashcard new_flashcard;
                 switch (flashcard_type) {
                     case "text":
                         System.out.println("Flashcard type is 'TEXT'.");
-                        Flashcard new_flashcard = new FlashcardText(saved_question,saved_answer); //Polymorpism
-                        Flashcard.appendToFile(new_flashcard,"flashcards1.txt");
+                        new_flashcard = new FlashcardText(saved_question,saved_answer); //Polymorpism
+                        CustomFile.serializeFlashcard(current_file,new_flashcard);
 
                         break;
                     case "abcd":
-                        System.out.println("Flashcard type is 'abcd'.");
+                        System.out.println("Flashcard type is 'ABCD'.");
 
                         break;
                     default:

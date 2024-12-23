@@ -1,6 +1,8 @@
 package FlashcardTypes;
 
-public abstract class Flashcard {
+import java.io.Serializable;
+
+public abstract class Flashcard implements Serializable {
     public boolean is_correct = false; //checks if answer is correct
     protected String question; //the question.
     public char type; //type of flashcard (so programme knows what to draw on screen)

@@ -1,4 +1,6 @@
 import DirectoryPanel.DictionaryPanel;
+import FlashcardTypes.Flashcard;
+import FlashcardTypes.FlashcardABCD;
 import Libraries.FlashcardLibrary;
 
 import javax.swing.*;
@@ -8,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 
 /**
@@ -188,9 +191,20 @@ public class GuiWindow
             {
                 is_inspecting = !is_inspecting;
                 System.out.println(is_inspecting);
+
+                //It allows you tou get ArrayList of all Flashcards from given file
+                ArrayList<Flashcard>flashcards =  CustomFile.readSerializefFlashcard(selected_file.getAbsolutePath());
+
+                //It is only for testing purposes
+                for(int i  =0;i<flashcards.size();i++){
+                    System.out.println(flashcards.get(i)+", type of flashcard "+flashcards.get(i).type);
+                }
+
             }
         });
     }
+
+
 
     /**
      * Shows the default view with the catalogue listing.
