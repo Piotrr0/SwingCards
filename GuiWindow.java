@@ -1,6 +1,8 @@
 import DirectoryPanel.DictionaryPanel;
 import FlashcardTypes.Flashcard;
 import FlashcardTypes.FlashcardABCD;
+import FlashcardTypes.FlashcardPanel;
+import FlashcardTypes.FlashcardText;
 import Libraries.FlashcardLibrary;
 
 import javax.swing.*;
@@ -36,9 +38,13 @@ public class GuiWindow
     private final JButton inspect_button;
     private final JButton profile_button;
     private final JButton add_folder_button;
+    //temporary
+    private final JButton work_test; //temporary button for testing flashcards;
 
     private File flashcards_directory;
     private DictionaryPanel dictionary_panel;
+    //temporary
+    private FlashcardPanel flashcard_panel;
     private File selected_file;
     private boolean is_inspecting;
 
@@ -53,6 +59,9 @@ public class GuiWindow
         add_folder_button = createMenuButton("Add Folder");
         inspect_button = createMenuButton("Inspect");
         profile_button = createMenuButton("Profile");
+
+        //temporary
+        work_test = createMenuButton("flashcard test");
 
         setupLayout();
         setupEventListeners();
@@ -116,6 +125,8 @@ public class GuiWindow
         menu.add(add_folder_button);
         menu.add(inspect_button);
         menu.add(profile_button);
+        //temporary
+        menu.add(work_test);
 
         // Add panels to main window
         window.add(menu, BorderLayout.NORTH);
@@ -202,6 +213,22 @@ public class GuiWindow
 
             }
         });
+
+        //temporary
+        work_test.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                ArrayList<Flashcard> flashcards = new ArrayList<>();
+                //TODO fix incosistent alignment
+                flashcards.add(new FlashcardText("w top ilu % fizyków na świecie jest prof. dr. inż. hab. Aleksander Muc?", "2%"));
+                flashcards.add(new FlashcardText("czego nienawidzi Piotr Kędra?", "Windowsa"));
+                flashcards.add(new FlashcardText("przezwisko Stachniewicza", "Stachu"));
+                flashcards.add(new FlashcardText("kompatybilny wstecznie model ps3 na europę kontynentalną", "CECHC04"));
+                flashcard_panel = new FlashcardPanel(main_section, flashcards);
+                main_section.add(flashcard_panel);
+                RefreshView();
+            }
+        });
     }
 
 
@@ -212,6 +239,7 @@ public class GuiWindow
     private void mainSectionDefault()
     {
         main_section.removeAll();
+        main_section.repaint();
 
         flashcards_directory = new File("flashcards");
         if(!flashcards_directory.exists())

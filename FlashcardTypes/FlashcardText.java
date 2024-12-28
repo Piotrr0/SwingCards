@@ -60,7 +60,7 @@ public class FlashcardText extends Flashcard   {
 
     @Override
     public void checkAnswer() {
-        if(input_answer == answer){
+        if(input_answer.equals(answer)){
             is_correct = true;
         }
         //no need to change to 0 it already is 0

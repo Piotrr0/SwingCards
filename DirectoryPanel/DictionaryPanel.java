@@ -65,6 +65,7 @@ public class DictionaryPanel extends JPanel
             DefaultMutableTreeNode node = (DefaultMutableTreeNode)file_tree.getLastSelectedPathComponent();
             if (node == null) return;
 
+            //File can be directory or file
             File selectedFile = (File) node.getUserObject();
 
             if (selectedFile.isFile() || selectedFile.isDirectory())

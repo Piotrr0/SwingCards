@@ -80,7 +80,6 @@ public class GuiAddFlashcard
         //input for reading answer from user
         text_answer = new JTextField();
         text_answer.setMaximumSize(new Dimension(300, text_question.getPreferredSize().height));
-        //button for saving answer
 
 
         //adding question
@@ -114,14 +113,21 @@ public class GuiAddFlashcard
         //Make text a default type of flashcard
         text_type.setSelected(true);
 
+        // true/false option
+        JRadioButton tf_type = new JRadioButton(("True/False"));
+        tf_type.setActionCommand("tf");
+
         /*If user chooses abcd_type, the text_type button returns string "abcd"*/
         JRadioButton abcd_type = new JRadioButton("ABCD");
         abcd_type.setActionCommand("abcd");
         flashcard_type_group.add(text_type);
+        flashcard_type_group.add(tf_type);
         flashcard_type_group.add(abcd_type);
+
 
         flashcard_type_panel.add(select_flashcard_type_label);
         flashcard_type_panel.add(text_type);
+        flashcard_type_panel.add(tf_type);
         flashcard_type_panel.add(abcd_type);
 
         input_panel.add(Box.createVerticalStrut(40)); //vertical distance
@@ -178,6 +184,10 @@ public class GuiAddFlashcard
                         break;
                     case "abcd":
                         System.out.println("Flashcard type is 'ABCD'.");
+
+                        break;
+                    case "tf":
+                        System.out.println("Flashacrd type is True/False");
 
                         break;
                     default:
