@@ -24,6 +24,9 @@ public class FlashcardABCD extends Flashcard {
             {
                 is_correct = true;
             }
+            else {
+                is_correct = false;
+            }
         }
     }
 

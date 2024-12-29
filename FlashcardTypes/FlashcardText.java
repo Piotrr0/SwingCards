@@ -52,6 +52,9 @@ public class FlashcardText extends Flashcard   {
         }
 
     }
+    public void overwriteInputAnswer(String answer){
+        input_answer = answer;
+    }
 
     @Override
     public String toString(){
@@ -62,6 +65,9 @@ public class FlashcardText extends Flashcard   {
     public void checkAnswer() {
         if(input_answer.equals(answer)){
             is_correct = true;
+        }
+        else {
+            is_correct = false;
         }
         //no need to change to 0 it already is 0
     }

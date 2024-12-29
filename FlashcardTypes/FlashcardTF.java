@@ -71,6 +71,9 @@ public class FlashcardTF extends Flashcard {
         if(input_answer == answer){
             is_correct = true;
         }
+        else {
+            is_correct = false;
+        }
         //no need to change to 0 it already is 0
     }
 }

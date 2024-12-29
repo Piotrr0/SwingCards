@@ -10,7 +10,7 @@ public abstract class Flashcard implements Serializable {
     abstract String printOut(int which_one); //prints out specific part of flashcard for outputting
     abstract public String toString();
     abstract void checkAnswer();
-    abstract void overwriteValues(String new_message, int which_one); //function for changing content of flashcards
+    abstract void overwriteValues(String new_message, int which_one); //function for changing content of flashcardsz
     public static void appendToFile(Flashcard flashcard,String filepath){
 
         System.out.println("appending to file");

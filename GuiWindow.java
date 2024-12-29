@@ -29,8 +29,6 @@ public class GuiWindow
     private final JFrame window;
     /**It is an instance of the menu bar that is displayed at the top of the screen */
     private final JPanel menu;
-    /**It is the section that displays the most important section under the menu bar*/
-    private JPanel main_section;
 
     // Menu buttons
     private final JButton catalogues_button;
@@ -51,7 +49,6 @@ public class GuiWindow
     public GuiWindow() {
         window = createMainWindow();
         menu = createMenuPanel();
-        main_section = createMainSection();
 
         // Initialize menu buttons
         catalogues_button = createMenuButton("Catalogues");
@@ -130,7 +127,7 @@ public class GuiWindow
 
         // Add panels to main window
         window.add(menu, BorderLayout.NORTH);
-        window.add(main_section, BorderLayout.CENTER);
+
 
         // Initialize default view
         mainSectionDefault();
@@ -170,7 +167,7 @@ public class GuiWindow
         {
             @Override
             public void actionPerformed(ActionEvent e) {
-                createMainSection();
+                window.remove(window.getContentPane().getComponent(1)); //removes component in center panel
                 mainSectionDefault();
             }
 
@@ -221,7 +218,7 @@ public class GuiWindow
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Flashcard> flashcards = new ArrayList<>();
                 //TODO fix incosistent alignment
-                flashcards.add(new FlashcardText("w top ilu % fizyków na świecie jest prof. dr. inż. hab. Aleksander Muc?", "2%"));
+                flashcards.add(new FlashcardText("w top ilu % fizyków na świecie jest prof. dr. hab. inż. Aleksander Muc?", "2%"));
                 flashcards.add(new FlashcardText("czego nienawidzi Piotr Kędra?", "Windowsa"));
                 flashcards.add(new FlashcardText("przezwisko Stachniewicza", "Stachu"));
                 flashcards.add(new FlashcardText("kompatybilny wstecznie model ps3 na europę kontynentalną", "CECHC04"));
@@ -241,7 +238,6 @@ public class GuiWindow
      */
     private void mainSectionDefault()
     {
-
         flashcards_directory = new File("flashcards");
         if(!flashcards_directory.exists())
         {

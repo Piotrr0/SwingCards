@@ -34,6 +34,7 @@ public class FlashcardPanel extends JPanel {
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         JLabel question = new JLabel(flashcards.get(counter).printOut(0));//printing out the question
         question.setAlignmentX(Component.CENTER_ALIGNMENT);
+        add(Box.createVerticalStrut(10));
         add(question);
         answer_field = new JTextField();
         addButtonListeners();
