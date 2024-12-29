@@ -30,7 +30,7 @@ public class GuiWindow
     /**It is an instance of the menu bar that is displayed at the top of the screen */
     private final JPanel menu;
     /**It is the section that displays the most important section under the menu bar*/
-    private final JPanel main_section;
+    private JPanel main_section;
 
     // Menu buttons
     private final JButton catalogues_button;
@@ -170,6 +170,7 @@ public class GuiWindow
         {
             @Override
             public void actionPerformed(ActionEvent e) {
+                createMainSection();
                 mainSectionDefault();
             }
 
@@ -224,9 +225,11 @@ public class GuiWindow
                 flashcards.add(new FlashcardText("czego nienawidzi Piotr Kędra?", "Windowsa"));
                 flashcards.add(new FlashcardText("przezwisko Stachniewicza", "Stachu"));
                 flashcards.add(new FlashcardText("kompatybilny wstecznie model ps3 na europę kontynentalną", "CECHC04"));
-                flashcard_panel = new FlashcardPanel(main_section, flashcards);
-                main_section.add(flashcard_panel);
+                window.remove(window.getContentPane().getComponent(1)); //removes component in center panel
+                flashcard_panel = new FlashcardPanel(flashcards);
+                window.add(flashcard_panel, BorderLayout.CENTER);
                 RefreshView();
+
             }
         });
     }
@@ -238,8 +241,6 @@ public class GuiWindow
      */
     private void mainSectionDefault()
     {
-        main_section.removeAll();
-        main_section.repaint();
 
         flashcards_directory = new File("flashcards");
         if(!flashcards_directory.exists())
@@ -247,24 +248,14 @@ public class GuiWindow
             flashcards_directory.mkdir();
         }
 
-        dictionary_panel = new DictionaryPanel(main_section, flashcards_directory);
+        dictionary_panel = new DictionaryPanel(flashcards_directory);
         dictionary_panel.addFileSelectionListener(file ->
         {
             selected_file = file;
         });
 
-        main_section.add(dictionary_panel);
+        window.add(dictionary_panel, BorderLayout.CENTER);
 
-        RefreshView();
-    }
-
-    /**
-     * Shows the learning view for flashcard study.
-     */
-    private void showLearningView()
-    {
-        main_section.removeAll();
-        main_section.add(new JLabel("It should display while learning flashcards"));
         RefreshView();
     }
 
@@ -273,7 +264,8 @@ public class GuiWindow
      */
     private void RefreshView()
     {
-        main_section.revalidate();
-        main_section.repaint();
+        //removing from center panel
+        window.getContentPane().getComponent(1).revalidate();
+        window.getContentPane().getComponent(1).repaint();
     }
 }

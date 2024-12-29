@@ -8,7 +8,6 @@ import java.io.File;
 
 public class DictionaryPanel extends JPanel
 {
-    private final JPanel main_section;
     private final JTree file_tree;
     private FileSelectionListener file_selection_listener;
 
@@ -19,9 +18,8 @@ public class DictionaryPanel extends JPanel
      * Enables lazy loading of directory contents for better performance
      */
 
-    public DictionaryPanel(JPanel main_section, File rootDirectory)
+    public DictionaryPanel(File rootDirectory)
     {
-        this.main_section = main_section;
         setLayout(new BorderLayout());
 
         file_tree = createFileTree(rootDirectory);

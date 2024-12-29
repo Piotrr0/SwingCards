@@ -11,7 +11,6 @@ public class FlashcardPanel extends JPanel {
     int counter = 0;
     private ArrayList<Flashcard> flashcards_list;
 
-    private final JPanel main_section;
 
     private JTextField answer_field; //solely used for text flashcard
     private String answer = "";
@@ -27,19 +26,15 @@ public class FlashcardPanel extends JPanel {
 
 
 
-    public FlashcardPanel (JPanel main_section, ArrayList<Flashcard> flashcards)
-    {
-        this.main_section = main_section;
-        this.main_section.removeAll();//clears the thing
-        this.main_section.repaint();
-        this.main_section.revalidate();
-
+    public FlashcardPanel (ArrayList<Flashcard> flashcards)
+    {;
+        setBackground(Color.WHITE);
         this.flashcards_list = flashcards;
 
-        this.main_section.setLayout(new BoxLayout(this.main_section, BoxLayout.Y_AXIS));
+        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         JLabel question = new JLabel(flashcards.get(counter).printOut(0));//printing out the question
         question.setAlignmentX(Component.CENTER_ALIGNMENT);
-        this.main_section.add(question);
+        add(question);
         answer_field = new JTextField();
         addButtonListeners();
 
@@ -47,7 +42,7 @@ public class FlashcardPanel extends JPanel {
         switch(flashcards_list.get(counter).type)
         {
             case 't':
-                text_UI(this.main_section, flashcards_list.get(counter));
+                text_UI(flashcards_list.get(counter));
                 break;
             default:
                 break;
@@ -55,27 +50,27 @@ public class FlashcardPanel extends JPanel {
 
     }
 
-    private void text_UI(JPanel main_section, Flashcard flashcard)
+    private void text_UI(Flashcard flashcard)
     {
-        main_section.add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(10));
         answer_field.setMaximumSize(new Dimension(300, answer_field.getPreferredSize().height));
         answer_field.setAlignmentX(Component.CENTER_ALIGNMENT);
-        main_section.add(answer_field);
+        add(answer_field);
 
-        main_section.add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(10));
         Box button_list_object = button_list();
         button_list_object.setAlignmentX(Component.CENTER_ALIGNMENT);
-        main_section.add(button_list_object);
+        add(button_list_object);
 
-        main_section.add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(10));
         grade_label = new JLabel(grade);//printing out the correctness
         grade_label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        main_section.add(grade_label);
+        add(grade_label);
 
-        main_section.add(Box.createVerticalStrut(10));
+        add(Box.createVerticalStrut(10));
         show_answer_label = new JLabel(answer);
         show_answer_label.setAlignmentX(Component.CENTER_ALIGNMENT);
-        main_section.add(show_answer_label);
+        add(show_answer_label);
 
     }
 
@@ -146,21 +141,21 @@ public class FlashcardPanel extends JPanel {
                 grade = "";
                 answer_field = new JTextField();
                 counter = (counter+1)% flashcards_list.size();
-                main_section.removeAll();//clears the thing and repaints with new flashcard yay
-                main_section.repaint();
+                removeAll();//clears the thing and repaints with new flashcard yay
+                repaint();
                 //TODO make that a function
                 JLabel question = new JLabel(flashcards_list.get(counter).printOut(0));
                 question.setAlignmentX(Component.CENTER_ALIGNMENT);
-                main_section.add(question);
+                add(question);
                 switch (flashcards_list.get(counter).type) {
                     case 't':
-                        text_UI(main_section, flashcards_list.get(counter));
+                        text_UI(flashcards_list.get(counter));
                         break;
                     default:
                         System.out.println("Unsupported flashcard type.");
                         break;
                 }
-                main_section.revalidate(); // Ensure layout is updated
+                revalidate(); // Ensure layout is updated
             }
         });
 
