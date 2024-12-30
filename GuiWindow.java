@@ -1,8 +1,5 @@
 import DirectoryPanel.DictionaryPanel;
-import FlashcardTypes.Flashcard;
-import FlashcardTypes.FlashcardABCD;
-import FlashcardTypes.FlashcardPanel;
-import FlashcardTypes.FlashcardText;
+import FlashcardTypes.*;
 import Libraries.FlashcardLibrary;
 
 import javax.swing.*;
@@ -231,9 +228,18 @@ public class GuiWindow
             @Override
             public void actionPerformed(ActionEvent e) {
                 ArrayList<Flashcard> flashcards = new ArrayList<>();
+
+                ArrayList<String> options_4 = new ArrayList<>();
+                options_4.add("3%");
+                options_4.add("4%");
+                options_4.add("5%");
+                options_4.add("2%");
+
+
+
                 //TODO fix incosistent alignment
-                flashcards.add(new FlashcardText("w top ilu % fizyków na świecie jest prof. dr. hab. inż. Aleksander Muc?", "2%"));
-                flashcards.add(new FlashcardText("czego nienawidzi Piotr Kędra?", "Windowsa"));
+                flashcards.add(new FlashcardABCD("W top ilu % fizyków jest prof. dr. hab. inż. Aleksander Muc?", 4, options_4));
+                flashcards.add(new FlashcardTF("Czy Zbigniew Kokosiński był w Japonii?", true));
                 flashcards.add(new FlashcardText("przezwisko Stachniewicza", "Stachu"));
                 flashcards.add(new FlashcardText("kompatybilny wstecznie model ps3 na europę kontynentalną", "CECHC04"));
                 window.remove(window.getContentPane().getComponent(1)); //removes component in center panel

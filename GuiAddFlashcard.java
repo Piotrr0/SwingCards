@@ -229,16 +229,18 @@ public class GuiAddFlashcard
             add_button.removeActionListener(listener);
         }
 
-        JLabel question_label = new JLabel("Enter question");
+        JLabel question_label = new JLabel("Enter Question:");
         question_label.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
-        JTextField question_field = new JTextField("");
+        JTextField question_field = new JTextField();
+        question_field.setMaximumSize(new Dimension(300, question_field.getPreferredSize().height));
         question_field.setAlignmentX(Component.CENTER_ALIGNMENT);
 
 
 
         input_panel.add(question_label);
+        input_panel.add(Box.createVerticalStrut(10));
         input_panel.add(question_field);
         input_panel.add(Box.createVerticalStrut(10)); //vertical distance
 
@@ -249,6 +251,9 @@ public class GuiAddFlashcard
         trueButton.setActionCommand("true");
         falseButton.setActionCommand("false");
         trueButton.setSelected(true);
+
+        trueButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        falseButton.setAlignmentX(Component.CENTER_ALIGNMENT);
 
         ButtonGroup group = new ButtonGroup();
         group.add(trueButton);

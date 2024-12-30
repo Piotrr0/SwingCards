@@ -13,8 +13,8 @@ public class FlashcardABCD extends Flashcard {
         int answer;
         ArrayList<String> options; //array for options
 
-        OptionsList(int how_many, int answer, ArrayList<String> options){
-            this.how_many = how_many;
+        OptionsList(int answer, ArrayList<String> options){
+            this.how_many = options.size();
             this.answer = answer;
             this.options = options; //we have to .clear() the original ArrayList afterwards because it's a shallow copy and only passes reference
         }
@@ -31,9 +31,9 @@ public class FlashcardABCD extends Flashcard {
     }
 
 
-    public FlashcardABCD(String question, int answer, int how_many, ArrayList<String> options) {
+    public FlashcardABCD(String question, int answer, ArrayList<String> options) {
         this.question = question;
-        option_list = new OptionsList(how_many, answer, options);
+        option_list = new OptionsList(answer, options);
         this.type = 'a'; //a -> abcd
     }
 
@@ -49,11 +49,14 @@ public class FlashcardABCD extends Flashcard {
             case (2): {
                 return String.valueOf(input_answer);
             }
+            case (3): {
+                return String.valueOf(option_list.how_many);
+            }
             default:
             {
                 //if which_one is in boundaries of list of answers, which starts from 3 up if it was case
-                if(which_one-3 < option_list.how_many && which_one-3 >= 0){
-                    return option_list.options.get(which_one-3);
+                if(which_one-4 < option_list.how_many && which_one-4 >= 0){
+                    return option_list.options.get(which_one-4);
                 }
                 else return "";
             }
@@ -67,7 +70,7 @@ public class FlashcardABCD extends Flashcard {
                 question = new_message;
                 break;
             }
-            case(1): { //again, different way of working with booleans
+            case(1): { //again, different way of working with this function
                 int temp_num;
                 try {
                     temp_num = Integer.parseInt(new_message);
