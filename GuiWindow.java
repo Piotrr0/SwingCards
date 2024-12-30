@@ -201,13 +201,27 @@ public class GuiWindow
                 is_inspecting = !is_inspecting;
                 System.out.println(is_inspecting);
 
-                //It allows you tou get ArrayList of all Flashcards from given file
-                ArrayList<Flashcard>flashcards =  CustomFile.readSerializefFlashcard(selected_file.getAbsolutePath());
+                //You can only inspect files,not entire folders
+                if(selected_file.getName().endsWith(".txt")){
+                    //It allows you tou get ArrayList of all Flashcards from given file
+                    ArrayList<Flashcard>flashcards =  CustomFile.readSerializefFlashcard(selected_file.getAbsolutePath());
 
-                //It is only for testing purposes
-                for(int i  =0;i<flashcards.size();i++){
-                    System.out.println(flashcards.get(i)+", type of flashcard "+flashcards.get(i).type);
+
+                    if(flashcards.size()==0){
+                        JOptionPane.showMessageDialog(null, "Deck is empty","",JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    else {
+                        for (int i = 0; i < flashcards.size(); i++) {
+                            System.out.println(flashcards.get(i) + ", type of flashcard " + flashcards.get(i).type);
+                        }
+                    }
                 }
+                else{
+                    System.out.println("You are trying to inspect entire folder!");
+                }
+
+
 
             }
         });
