@@ -1,4 +1,5 @@
 import FlashcardTypes.Flashcard;
+import FlashcardTypes.FlashcardABCD;
 import FlashcardTypes.FlashcardTF;
 import FlashcardTypes.FlashcardText;
 
@@ -6,6 +7,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 /* Gui that pops up while add button is clicked */
@@ -116,7 +119,9 @@ public class GuiAddFlashcard
         abcd_type.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("There should be implementation for abcd type");
+                displayAddABCDlashcardGui(input_panel,filename);
+
+                input_panel.revalidate();
             }
         });
         abcd_type.setActionCommand("abcd");
@@ -283,6 +288,109 @@ public class GuiAddFlashcard
 
                 JOptionPane.showMessageDialog(add_flashcard_window, "Flashcard added!");
                 add_flashcard_window.dispose(); // Close the window
+            }
+        });
+    }
+
+    private  void displayAddABCDlashcardGui(JPanel input_panel,String filename){
+        input_panel.removeAll();
+        // Remove all existing listeners from the add_button
+        for (ActionListener listener : add_button.getActionListeners()) {
+            add_button.removeActionListener(listener);
+        }
+
+        //Inner pannel that will be centerted relatively to input_panel
+        JPanel upper_panel = new JPanel();
+        upper_panel.setLayout(new BoxLayout(upper_panel, BoxLayout.Y_AXIS));
+
+
+
+        JLabel question_label = new JLabel("Enter question:");
+        upper_panel.add(question_label);
+        question_label.setAlignmentX(Component.CENTER_ALIGNMENT);
+        upper_panel.add(Box.createVerticalStrut(10)); //vertical distance
+        JTextField question_field = new JTextField();
+        upper_panel.add(question_field);
+
+        upper_panel.setMaximumSize(new Dimension(300, upper_panel.getPreferredSize().height));
+        upper_panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        input_panel.add(upper_panel);
+
+
+
+
+
+        //We create lower panel that stores ABCD options
+        JPanel lower_panel = new JPanel();
+        lower_panel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        lower_panel.setLayout(new BoxLayout(lower_panel, BoxLayout.Y_AXIS));
+
+        //We create arrays of radio buttons,text fields and panels
+        JRadioButton [] option_radio_button =  new JRadioButton[4];
+        JTextField[] option_fields = new JTextField[4];
+        JPanel[] option_panels = new JPanel[4]; //Option panel =radio_button + text_field
+        lower_panel.add(Box.createVerticalStrut(30)); //vertical distance
+
+        //Group for options(answers)
+        ButtonGroup group = new ButtonGroup();
+
+
+        //All options should have the same GUIS thus we use a loop.
+        for(int i = 0;i<option_panels.length;i++){
+            lower_panel.add(Box.createVerticalStrut(10)); //vertical distance
+
+            option_radio_button[i] = new JRadioButton("Option"+(i+1));
+            option_radio_button[i].setAlignmentX(Component.LEFT_ALIGNMENT);
+            option_radio_button[i].setActionCommand(String.valueOf(i+1));
+            group.add(option_radio_button[i]);
+
+
+            option_fields[i] = new JTextField();
+            option_panels[i] = new JPanel();
+            option_panels[i].setBackground(Color.yellow);
+            option_panels[i].add(option_radio_button[i]);
+            option_panels[i].add(option_fields[i]);
+            option_panels[i].setLayout(new BoxLayout(option_panels[i], BoxLayout.X_AXIS));
+
+
+
+            lower_panel.add(option_panels[i]);
+
+
+        }
+
+        //Make first button a default option
+        option_radio_button[0].setSelected(true);
+        input_panel.add(lower_panel);
+        lower_panel.setMaximumSize(new Dimension(300, lower_panel.getPreferredSize().height));
+
+
+        lower_panel.setVisible(true);
+
+        //Bindind add button for saving true/false flashcard
+        add_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                //We create flashcard based on its type,POLYMORPHISM!!!!!!!
+                Flashcard new_flashcard;
+                String selected_button = getSelectedButtonActionCommand(group);
+                System.out.println("Selection option:"+selected_button);
+
+                ArrayList<String> all_options = new ArrayList<String>();
+                for(int i =0;i<option_fields.length;i++){
+                    all_options.add(option_fields[i].getText());
+                }
+                new_flashcard = new FlashcardABCD(question_field.getText(),Integer.parseInt(selected_button),all_options);
+                CustomFile.serializeFlashcard(current_file,new_flashcard);
+
+                System.out.println("Im trying to add abcd_flashcard:"+new_flashcard);
+
+
+                JOptionPane.showMessageDialog(add_flashcard_window, "Flashcard added!");
+                add_flashcard_window.dispose(); // Close the window
+
+
             }
         });
     }

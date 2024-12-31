@@ -1,5 +1,6 @@
 package FlashcardTypes;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class FlashcardABCD extends Flashcard {
@@ -8,7 +9,7 @@ public class FlashcardABCD extends Flashcard {
     OptionsList option_list;
 
     //inner class
-    class OptionsList{
+    class OptionsList implements Serializable {
         int how_many; //how many options
         int answer;
         ArrayList<String> options; //array for options
