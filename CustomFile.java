@@ -3,6 +3,8 @@ import FlashcardTypes.FlashcardText;
 
 import java.io.*;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 /**
@@ -28,7 +30,13 @@ abstract public class CustomFile {
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Error during deserialization: " + e.getMessage());
+            if(isEmpty(filename)){
+                System.err.println("Error during deserialization: " +", file is empty");
+
+            }
+            else{
+                System.err.println("Error during deserialization: ");
+            }
         }
         return flashcards;
     }
@@ -38,7 +46,11 @@ abstract public class CustomFile {
      * */
     public static void serializeFlashcard(String filename,Flashcard flashcard){
         //We first read entire file and store objects inside ArrayList. Then we add our new flashcard and save entire file at once.
-        ArrayList<Flashcard> flashcards =  readSerializefFlashcard(filename);
+        //There is no need to read file if it is empty
+        ArrayList<Flashcard> flashcards = new ArrayList<>();
+        if(!isEmpty(filename)){
+            flashcards =  readSerializefFlashcard(filename);
+        }
         flashcards.add(flashcard);
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             for (Flashcard flashcardx : flashcards) {
@@ -50,4 +62,57 @@ abstract public class CustomFile {
         }
     }
 
-}
+    /**
+     * Function returns if given file is empty
+     * @param path path to the file
+     * @return returns boolean
+     * */
+    public static boolean isEmpty(String path){
+        File file = new File(path);
+        return file.length()==0;
+    }
+
+    /**
+     * Function saves information to the raport file without a timestamp
+     * @param message message to be saved
+     * @param filename location of file to be saved in
+     * */
+    public static void appendToReport(String message,String filename){
+        // Use try-with-resources to ensure buffer is automatically closed
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
+            writer.write(message);       // Write the new line
+            writer.newLine();           // Add a newline character
+        } catch (IOException e) {
+            System.out.println("Error while saving to raport!");
+        }
+    }
+
+    /**
+     * Function saves information to the raport file and can add timestamp
+     * @param message message to be saved
+     * @param filename location of file to be saved in
+     * @param timestamp specifies if you want to have timestampt prior the message
+     * */
+    public static void appendToReport(String message,String filename ,Boolean timestamp){
+        //append with timestamp
+        if(timestamp) {
+            // Get the current time
+            LocalTime currentTime = LocalTime.now();
+
+            // Format the time as hh:mm:ss
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+            String formattedTime = currentTime.format(formatter);
+            System.out.println("adding timestamp");
+            // Print the current time
+            appendToReport(formattedTime+": "+message, filename);
+        }
+        //append without timestamp
+        else{
+            appendToReport(message,filename);
+
+        }
+    }
+
+    }
+
+

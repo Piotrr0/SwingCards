@@ -216,7 +216,7 @@ public class GuiAddFlashcard
                 CustomFile.serializeFlashcard(current_file,new_flashcard);
                 System.out.println("Im trying to add text_flashcard");
 
-
+                CustomFile.appendToReport("User added text flashcard:["+new_flashcard+"]","raport.txt",true);
                 JOptionPane.showMessageDialog(add_flashcard_window, "Flashcard added!");
                 add_flashcard_window.dispose(); // Close the window
 
@@ -285,7 +285,7 @@ public class GuiAddFlashcard
 
                 System.out.println("Im trying to add tf_flashcard:"+new_flashcard);
 
-
+                CustomFile.appendToReport("User added True/False flashcard:["+new_flashcard+"]","raport.txt",true);
                 JOptionPane.showMessageDialog(add_flashcard_window, "Flashcard added!");
                 add_flashcard_window.dispose(); // Close the window
             }
@@ -384,8 +384,9 @@ public class GuiAddFlashcard
                 new_flashcard = new FlashcardABCD(question_field.getText(),Integer.parseInt(selected_button),all_options);
                 CustomFile.serializeFlashcard(current_file,new_flashcard);
 
-                System.out.println("Im trying to add abcd_flashcard:"+new_flashcard);
 
+
+                CustomFile.appendToReport("User added ABCD flashcard:["+new_flashcard+"]","raport.txt",true);
 
                 JOptionPane.showMessageDialog(add_flashcard_window, "Flashcard added!");
                 add_flashcard_window.dispose(); // Close the window
