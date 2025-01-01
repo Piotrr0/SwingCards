@@ -7,7 +7,38 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
-public class FlashcardPanel extends JPanel {
+/**
+ * This interface specifies what UIs in test mode have to be implemented
+ * */
+interface FlashcardTestUIInterface{
+    /**
+     * Shows the common thing among all flashcards which is question at the top of the screen
+     * */
+    void showInitialUI();
+    /**
+     * Manages the UI for the flashcard that is of text type
+     * @param flashcard particular flashcard to be displayed
+     * */
+    void text_UI(Flashcard flashcard);
+    /**
+     * Manages the UI for the flashcard that is of TRUE/FALSE type
+     * @param flashcard particular flashcard to be displayed
+     * */
+    void TF_UI(Flashcard flashcard);
+    /**
+     * Manages the UI for the flashcard that is of ABCD type
+     * @param flashcard particular flashcard to be displayed
+     * */
+    void ABCD_UI(Flashcard flashcard);
+
+    /**
+     * Shows information on screen after question.
+     * */
+    void showAfterQuestion();
+
+}
+
+public class FlashcardPanel extends JPanel implements FlashcardTestUIInterface{
 
     int counter = 0;
     private ArrayList<Flashcard> flashcards_list;
@@ -51,13 +82,15 @@ public class FlashcardPanel extends JPanel {
 
     }
 
-    private void showInitialUI()
+
+    public void showInitialUI()
     {
         add(Box.createVerticalStrut(10));
         JLabel question = new JLabel(flashcards_list.get(counter).printOut(0));
         question.setAlignmentX(CENTER_ALIGNMENT);
         add(question);
         add(Box.createVerticalStrut(10));
+        //It switches between UI based on current flashcard type
         switch (flashcards_list.get(counter).type) {
             case 't':
                 text_UI(flashcards_list.get(counter));
@@ -75,7 +108,7 @@ public class FlashcardPanel extends JPanel {
 
     }
 
-    private void text_UI(Flashcard flashcard)
+    public void text_UI(Flashcard flashcard)
     {
         answer_field = new JTextField();
         answer_field.setMaximumSize(new Dimension(300, answer_field.getPreferredSize().height));
@@ -87,7 +120,7 @@ public class FlashcardPanel extends JPanel {
 
     }
 
-    private void TF_UI(Flashcard flashcard)
+    public void TF_UI(Flashcard flashcard)
     {
         JRadioButton true_button = new JRadioButton("True");
         JRadioButton false_button = new JRadioButton("False");
@@ -113,7 +146,7 @@ public class FlashcardPanel extends JPanel {
         showAfterQuestion();
 
     }
-    private void ABCD_UI(Flashcard flashcard)
+    public void ABCD_UI(Flashcard flashcard)
     {
         int how_many_options = Integer.parseInt(flashcard.printOut(3));
         ArrayList<JRadioButton> options = new ArrayList<>();;
@@ -144,7 +177,7 @@ public class FlashcardPanel extends JPanel {
         return horizontal_box;
     }
 
-    private void showAfterQuestion()
+    public void showAfterQuestion()
     {
         add(Box.createVerticalStrut(10));
         Box button_list_object = buttonList();
