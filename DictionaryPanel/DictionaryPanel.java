@@ -121,13 +121,19 @@ public class DictionaryPanel extends JPanel
 
     public void refreshTree()
     {
+        TreePath selectedPath = file_tree.getSelectionPath();
+
         DefaultMutableTreeNode root = (DefaultMutableTreeNode) file_tree.getModel().getRoot();
         root.removeAllChildren();
+        File rootDirectory = (File) root.getUserObject();
+        createTreeNodes(root, rootDirectory);
 
-        File root_directory = (File) root.getUserObject();
-        createTreeNodes(root, root_directory);
+        DefaultTreeModel model = (DefaultTreeModel) file_tree.getModel();
+        model.reload();
 
-        ((DefaultTreeModel) file_tree.getModel()).reload();
+        if (selectedPath != null) {
+            file_tree.setSelectionPath(selectedPath);
+        }
     }
 
     // Custom cell renderer for displaying file names

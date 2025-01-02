@@ -155,6 +155,7 @@ public class GuiWindow
                     try
                     {
                         deck.createNewFile();
+                        dictionary_panel.refreshTree();
                     }
                     catch (IOException ex) {
                         throw new RuntimeException(ex);
@@ -185,7 +186,7 @@ public class GuiWindow
                         File directory = new File(selected_file, dir_name);
                         if(directory.mkdirs())
                         {
-                            mainSectionDefault();
+                            dictionary_panel.refreshTree();
                         }
                     }
                 }
