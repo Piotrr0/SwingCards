@@ -33,6 +33,7 @@ public class GuiWindow
     private final JButton inspect_button;
     private final JButton profile_button;
     private final JButton add_folder_button;
+    private final JButton delete_button;
     //temporary
     private final JButton work_test; //temporary button for testing flashcards;
 
@@ -53,6 +54,7 @@ public class GuiWindow
         add_folder_button = createMenuButton("Add Folder");
         inspect_button = createMenuButton("Inspect");
         profile_button = createMenuButton("Profile");
+        delete_button = createMenuButton("Delete");
 
         //temporary
         work_test = createMenuButton("flashcard test");
@@ -119,6 +121,7 @@ public class GuiWindow
         menu.add(add_folder_button);
         menu.add(inspect_button);
         menu.add(profile_button);
+        menu.add(delete_button);
         //temporary
         menu.add(work_test);
 
@@ -220,6 +223,27 @@ public class GuiWindow
 
 
 
+            }
+        });
+
+        delete_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if(selected_file != null)
+                {
+                    int confirmation = JOptionPane.showConfirmDialog(
+                            null,
+                            "Are you sure you want to delete " + selected_file.getName() + " file?",
+                            "Confirm Delete",
+                            JOptionPane.YES_NO_OPTION
+                    );
+                    if (confirmation == JOptionPane.YES_OPTION)
+                    {
+                        selected_file.delete();
+                        dictionary_panel.refreshTree();
+                    }
+                }
             }
         });
 

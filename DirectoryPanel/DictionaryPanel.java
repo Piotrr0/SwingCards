@@ -119,6 +119,17 @@ public class DictionaryPanel extends JPanel
         }
     }
 
+    public void refreshTree()
+    {
+        DefaultMutableTreeNode root = (DefaultMutableTreeNode) file_tree.getModel().getRoot();
+        root.removeAllChildren();
+
+        File root_directory = (File) root.getUserObject();
+        createTreeNodes(root, root_directory);
+
+        ((DefaultTreeModel) file_tree.getModel()).reload();
+    }
+
     // Custom cell renderer for displaying file names
     private static class FileTreeCellRenderer extends DefaultTreeCellRenderer
     {
