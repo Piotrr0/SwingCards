@@ -1,4 +1,4 @@
-package DirectoryPanel;
+package DictionaryPanel;
 import java.io.File;
 
 public interface FileSelectionListener

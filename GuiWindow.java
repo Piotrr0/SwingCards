@@ -1,4 +1,4 @@
-import DirectoryPanel.DictionaryPanel;
+import DictionaryPanel.DictionaryPanel;
 import FlashcardTypes.*;
 import Libraries.FlashcardLibrary;
 

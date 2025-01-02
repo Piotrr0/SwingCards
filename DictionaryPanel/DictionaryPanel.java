@@ -1,4 +1,4 @@
-package DirectoryPanel;
+package DictionaryPanel;
 
 import javax.swing.*;
 import javax.swing.tree.*;
