@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class FlashcardABCD extends Flashcard {
 
-    int input_answer;
+    String input_answer = "";
     OptionsList option_list;
 
     //inner class
@@ -21,7 +21,7 @@ public class FlashcardABCD extends Flashcard {
         }
         public void checkAnswer()
         {
-            if (input_answer == answer)
+            if (input_answer.equals(options.get(answer-1)))
             {
                 is_correct = true;
             }
@@ -44,11 +44,11 @@ public class FlashcardABCD extends Flashcard {
             case (0): {
                 return question;
             }
-            case (1): { //slightly different way of working with booleans
+            case (1): {
                 return String.valueOf(option_list.answer);
             }
             case (2): {
-                return String.valueOf(input_answer);
+                return (input_answer);
             }
             case (3): {
                 return String.valueOf(option_list.how_many);
@@ -83,14 +83,7 @@ public class FlashcardABCD extends Flashcard {
                 break;
             }
             case(2): {
-                int temp_num;
-                try {
-                    temp_num = Integer.parseInt(new_message);
-                }
-                catch (NumberFormatException e ){
-                    return;
-                }
-                input_answer = temp_num;
+                input_answer = new_message;
                 break;
             }
             default:

@@ -252,6 +252,7 @@ public class GuiWindow
         work_test.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                //FLASHCARD ARRAY HAS TO BE CREATED HERE!!!!
                 ArrayList<Flashcard> flashcards = new ArrayList<>();
 
                 ArrayList<String> options_4 = new ArrayList<>();
@@ -262,7 +263,6 @@ public class GuiWindow
 
 
 
-                //TODO fix incosistent alignment
                 flashcards.add(new FlashcardABCD("W top ilu % fizyków jest prof. dr. hab. inż. Aleksander Muc?", 4, options_4));
                 flashcards.add(new FlashcardTF("Czy Zbigniew Kokosiński był w Japonii?", true));
                 flashcards.add(new FlashcardText("przezwisko Stachniewicza", "Stachu"));

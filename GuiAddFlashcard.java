@@ -119,7 +119,7 @@ public class GuiAddFlashcard
         abcd_type.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayAddABCDlashcardGui(input_panel,filename);
+                displayAddABCDFlashcardGui(input_panel,filename);
 
                 input_panel.revalidate();
             }
@@ -163,6 +163,8 @@ public class GuiAddFlashcard
      * */
     private void displayAddTextFlashcardGui(JPanel input_panel,String filename){
         input_panel.removeAll();
+        input_panel.repaint();
+        input_panel.revalidate();
 
         // Remove all existing listeners from the add_button
         for (ActionListener listener : add_button.getActionListeners()) {
@@ -199,11 +201,12 @@ public class GuiAddFlashcard
         input_panel.add(text_answer);
 
 
-        JLabel catalogue_name_label = new JLabel("You are adding a flashcard to "+filename);
-
+        JLabel catalogue_name_label = new JLabel("You are adding a flashcard to: "+filename);
         catalogue_name_label.setAlignmentX(Component.CENTER_ALIGNMENT); //centers the field
-
         input_panel.add(catalogue_name_label);
+
+        //vertical distance so that selecting flashcard type appears consistently in one spot
+        input_panel.add(Box.createVerticalStrut(80)); //vertical distance
 
         //Bindind add button to create text flashcard
         add_button.addActionListener(new ActionListener() {
@@ -229,6 +232,10 @@ public class GuiAddFlashcard
      * */
     private  void displayAddTFFlashcardGui(JPanel input_panel,String filename){
         input_panel.removeAll();
+        input_panel.repaint();
+        input_panel.revalidate();
+
+
         // Remove all existing listeners from the add_button
         for (ActionListener listener : add_button.getActionListeners()) {
             add_button.removeActionListener(listener);
@@ -269,6 +276,12 @@ public class GuiAddFlashcard
 
         input_panel.add(Box.createVerticalStrut(10)); //vertical distance
 
+        JLabel catalogue_name_label = new JLabel("You are adding a flashcard to: "+filename);
+        catalogue_name_label.setAlignmentX(Component.CENTER_ALIGNMENT); //centers the field
+        input_panel.add(catalogue_name_label);
+
+        //vertical distance so that selecting flashcard type appears consistently in one spot
+        input_panel.add(Box.createVerticalStrut(98));
 
         //Bindind add button for saving true/false flashcard
         add_button.addActionListener(new ActionListener() {
@@ -292,8 +305,10 @@ public class GuiAddFlashcard
         });
     }
 
-    private  void displayAddABCDlashcardGui(JPanel input_panel,String filename){
+    private  void displayAddABCDFlashcardGui(JPanel input_panel,String filename){
         input_panel.removeAll();
+        input_panel.repaint();
+        input_panel.revalidate();
         // Remove all existing listeners from the add_button
         for (ActionListener listener : add_button.getActionListeners()) {
             add_button.removeActionListener(listener);
@@ -305,7 +320,7 @@ public class GuiAddFlashcard
 
 
 
-        JLabel question_label = new JLabel("Enter question:");
+        JLabel question_label = new JLabel("Enter Question:");
         upper_panel.add(question_label);
         question_label.setAlignmentX(Component.CENTER_ALIGNMENT);
         upper_panel.add(Box.createVerticalStrut(10)); //vertical distance
@@ -315,7 +330,6 @@ public class GuiAddFlashcard
         upper_panel.setMaximumSize(new Dimension(300, upper_panel.getPreferredSize().height));
         upper_panel.setAlignmentX(Component.CENTER_ALIGNMENT);
         input_panel.add(upper_panel);
-
 
 
 
@@ -366,6 +380,10 @@ public class GuiAddFlashcard
 
 
         lower_panel.setVisible(true);
+
+        JLabel catalogue_name_label = new JLabel("You are adding a flashcard to: "+filename);
+        catalogue_name_label.setAlignmentX(Component.CENTER_ALIGNMENT); //centers the field
+        input_panel.add(catalogue_name_label);
 
         //Bindind add button for saving true/false flashcard
         add_button.addActionListener(new ActionListener() {

@@ -6,9 +6,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.concurrent.ThreadLocalRandom;
+
 
 /**
- * This interface specifies what UIs in test mode have to be implemented
+ * This interface specifies what UIs in learn mode have to be implemented
  * */
 interface FlashcardTestUIInterface{
     /**
@@ -40,11 +42,16 @@ interface FlashcardTestUIInterface{
 
 public class FlashcardPanel extends JPanel implements FlashcardTestUIInterface{
 
-    int counter = 0;
+
+    int counter;
+    int how_many_correct = 0;
+    int how_many_total;
+    boolean finite_mode = false; //finite - correctly answered questions are removed
     private ArrayList<Flashcard> flashcards_list;
+    boolean answered_correctly = false; //even if someone does weird stuff after they answered correctly it will be remembered
 
 
-    private JTextField answer_field; //solely used for text flashcard
+    private JTextField answer_field = new JTextField(); //solely used for text flashcard
     private String answer = "";
     private String grade = "";
     private ButtonGroup TF_group;
@@ -53,6 +60,10 @@ public class FlashcardPanel extends JPanel implements FlashcardTestUIInterface{
     private final JButton check = new JButton("Check");
     private final JButton next = new JButton("Next");
     private final JButton show = new JButton("Show Answer");
+
+    private final JButton infinite = new JButton("infinite");
+    private final JButton finite = new JButton(" finite ");
+
 
     private JLabel grade_label;
     private JLabel show_answer_label;
@@ -71,21 +82,48 @@ public class FlashcardPanel extends JPanel implements FlashcardTestUIInterface{
     }
 
     public FlashcardPanel (ArrayList<Flashcard> flashcards)
-    {;
+    {
+
+
         setBackground(Color.WHITE);
         this.flashcards_list = flashcards;
+        how_many_total = flashcards_list.size();
+        counter = ThreadLocalRandom.current().nextInt(0, flashcards_list.size());
+        System.out.println(counter);
 
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
         addButtonListeners();
-        showInitialUI();
+        chooseLearningMode();
+        //showInitialUI();
 
     }
 
+    public void chooseLearningMode()
+    {
+        add(Box.createVerticalStrut(10));
+        JLabel mode_choose = new JLabel("Choose Learning Mode");
+        mode_choose.setAlignmentX(CENTER_ALIGNMENT);
+        add(mode_choose);
+        add(Box.createVerticalStrut(10));
+        infinite.setAlignmentX(CENTER_ALIGNMENT);
+        add(infinite);
+        add(Box.createVerticalStrut(10));
+        finite.setAlignmentX(CENTER_ALIGNMENT);
+        add(finite);
+    }
 
     public void showInitialUI()
     {
+
         add(Box.createVerticalStrut(10));
+        if(finite_mode)
+        {
+            JLabel progress = new JLabel("Progress: " + how_many_correct + "\\" + how_many_total);
+            progress.setAlignmentX(CENTER_ALIGNMENT);
+            add(progress);
+            add(Box.createVerticalStrut(10));
+        }
         JLabel question = new JLabel(flashcards_list.get(counter).printOut(0));
         question.setAlignmentX(CENTER_ALIGNMENT);
         add(question);
@@ -110,7 +148,6 @@ public class FlashcardPanel extends JPanel implements FlashcardTestUIInterface{
 
     public void text_UI(Flashcard flashcard)
     {
-        answer_field = new JTextField();
         answer_field.setMaximumSize(new Dimension(300, answer_field.getPreferredSize().height));
         answer_field.setAlignmentX(CENTER_ALIGNMENT);
         add(answer_field);
@@ -155,12 +192,22 @@ public class FlashcardPanel extends JPanel implements FlashcardTestUIInterface{
         for(int i = 0; i < how_many_options; i++)
         {
             options.add(new JRadioButton(flashcard.printOut(4+i)));
-            options.get(i).setActionCommand(String.valueOf(i+1)); //numbering from 1, not 0!!!
+            options.get(i).setActionCommand(flashcard.printOut(4+i)); //action command is answer not number because random printing out
             options.get(i).setBackground(Color.WHITE);
             options.get(i).setAlignmentX(CENTER_ALIGNMENT);
             ABCD_group.add(options.get(i));
-            add(options.get(i));
+
+            //add(options.get(i));
+            //add(Box.createVerticalStrut(10));
+        }
+        int random_ABCD;
+        //randomly printing out ABCD options so you can't just memorise where the answer is
+        while(!options.isEmpty())
+        {
+            random_ABCD = ThreadLocalRandom.current().nextInt(0, options.size());
+            add(options.get(random_ABCD));
             add(Box.createVerticalStrut(10));
+            options.remove(random_ABCD);
         }
         showAfterQuestion();
     }
@@ -197,6 +244,32 @@ public class FlashcardPanel extends JPanel implements FlashcardTestUIInterface{
 
     private void addButtonListeners()
     {
+        infinite.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                finite_mode = false;
+                removeAll();
+                repaint();
+
+                showInitialUI();
+
+                revalidate();
+            }
+        });
+
+        finite.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                finite_mode = true;
+                removeAll();
+                repaint();
+
+                showInitialUI();
+
+                revalidate();
+            }
+        });
+
         check.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -224,16 +297,13 @@ public class FlashcardPanel extends JPanel implements FlashcardTestUIInterface{
                         String selected_button_ABCD = getSelectedButtonActionCommand(ABCD_group);
                         switch(selected_button_ABCD)
                         {
-                            case "1":
-                            case "2":
-                            case "3":
-                            case "4":
-                                flashcards_list.get(counter).overwriteValues(selected_button_ABCD, 2);
-                                break;
-                            default:
-                            {
+                            case "null":
                                 grade_label.setText("Choose Answer");
                                 return;
+                            default:
+                            {
+                                flashcards_list.get(counter).overwriteValues(selected_button_ABCD, 2);
+                                break;
                             }
                         }
 
@@ -245,6 +315,7 @@ public class FlashcardPanel extends JPanel implements FlashcardTestUIInterface{
                 if(flashcards_list.get(counter).is_correct)
                 {
                     grade = "Correct";
+                    answered_correctly = true;
                 }
                 else
                 {
@@ -284,16 +355,31 @@ public class FlashcardPanel extends JPanel implements FlashcardTestUIInterface{
             public void actionPerformed(ActionEvent e) {
 
                 flashcards_list.get(counter).is_correct=false;
+                if(finite_mode && answered_correctly)//finite mode
+                {
+                    flashcards_list.remove(counter);//removing correctly answered question
+                    how_many_correct++;
+                }
+                answered_correctly = false;
                 answer = "";
                 grade = "";
-                answer_field = new JTextField();
-                counter = (counter+1)% flashcards_list.size();
+                answer_field.setText("");
                 removeAll();//clears the thing and repaints with new flashcard yay
                 repaint();
-
-                showInitialUI();
-
-                revalidate(); // Ensure layout is updated
+                if(flashcards_list.isEmpty())
+                {
+                    add(Box.createVerticalStrut(10));
+                    JLabel complete = new JLabel("All Questions Answered Correctly!");
+                    complete.setAlignmentX(CENTER_ALIGNMENT);
+                    add(complete);
+                    revalidate();
+                }
+                else
+                {
+                    counter = ThreadLocalRandom.current().nextInt(0, flashcards_list.size());
+                    showInitialUI();
+                    revalidate();
+                }
             }
         });
 

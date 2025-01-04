@@ -3,7 +3,7 @@ package FlashcardTypes;
 public class FlashcardText extends Flashcard   {
 
     private String answer; //answer to the question
-    private String input_answer =""; //user's inputted answer, nothing by default
+    private String input_answer = ""; //user's inputted answer, nothing by default
 
     public FlashcardText(String question, String answer) {
         this.question = question;
