@@ -193,7 +193,7 @@ public class GuiWindow
             }
         });
 
-        //TODO:
+
         inspect_button.addActionListener(new ActionListener()
         {
             @Override
@@ -248,29 +248,40 @@ public class GuiWindow
             }
         });
 
-        //temporary
+        //Binding test button
         work_test.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 //FLASHCARD ARRAY HAS TO BE CREATED HERE!!!!
                 ArrayList<Flashcard> flashcards = new ArrayList<>();
 
-                ArrayList<String> options_4 = new ArrayList<>();
-                options_4.add("3%");
-                options_4.add("4%");
-                options_4.add("5%");
-                options_4.add("2%");
+
+
+                //You can only select files to have test
+                if(selected_file.getName().endsWith(".txt")){
+                    //It allows you tou get ArrayList of all Flashcards from given file
+                    flashcards =  CustomFile.readSerializefFlashcard(selected_file.getAbsolutePath());
+
+
+                    if(flashcards.size()==0){
+                        JOptionPane.showMessageDialog(null, "Deck is empty","",JOptionPane.ERROR_MESSAGE);
+                    }
+
+                    else {
+                        window.remove(window.getContentPane().getComponent(1)); //removes component in center panel
+                        flashcard_panel = new FlashcardPanel(flashcards);
+                        window.add(flashcard_panel, BorderLayout.CENTER);
+                        RefreshView();
+                    }
+                }
+                else{
+                    System.out.println("You are trying to take a test from entire folder!");
+                }
 
 
 
-                flashcards.add(new FlashcardABCD("W top ilu % fizyków jest prof. dr. hab. inż. Aleksander Muc?", 4, options_4));
-                flashcards.add(new FlashcardTF("Czy Zbigniew Kokosiński był w Japonii?", true));
-                flashcards.add(new FlashcardText("przezwisko Stachniewicza", "Stachu"));
-                flashcards.add(new FlashcardText("kompatybilny wstecznie model ps3 na europę kontynentalną", "CECHC04"));
-                window.remove(window.getContentPane().getComponent(1)); //removes component in center panel
-                flashcard_panel = new FlashcardPanel(flashcards);
-                window.add(flashcard_panel, BorderLayout.CENTER);
-                RefreshView();
+
+
 
             }
         });
