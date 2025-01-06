@@ -2,10 +2,12 @@ import FlashcardTypes.Flashcard;
 import FlashcardTypes.FlashcardText;
 
 import java.io.*;
-import java.nio.file.StandardOpenOption;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * This class is used to manage file system especially serialization and deserialization
@@ -113,6 +115,35 @@ abstract public class CustomFile {
         }
     }
 
+    public static List<Path> findAllTextFiles(String directoryPath) throws IOException {
+        List<Path> textFiles = new ArrayList<>();
+        Path startPath = Paths.get(directoryPath);
+
+        // Walk the file tree
+        Files.walkFileTree(startPath, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+                if (file.toString().endsWith(".txt")) {
+                    textFiles.add(file);
+                }
+                return FileVisitResult.CONTINUE;
+            }
+
+            @Override
+            public FileVisitResult visitFileFailed(Path file, IOException exc) {
+                System.err.println("Failed to access file: " + file + " (" + exc.getMessage() + ")");
+                return FileVisitResult.CONTINUE;
+            }
+        });
+
+        return textFiles;
     }
+
+
+
+    }
+
+
+
 
 

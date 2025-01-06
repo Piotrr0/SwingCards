@@ -9,6 +9,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 
 
@@ -274,8 +275,44 @@ public class GuiWindow
                         RefreshView();
                     }
                 }
+                //You want to take a test from the entire folder
                 else{
-                    System.out.println("You are trying to take a test from entire folder!");
+
+                    try {
+                        //Get all .txt files recursively and convert them into array of strings
+                        ArrayList<String>paths = new ArrayList<>();
+                        for (Path path : CustomFile.findAllTextFiles(selected_file.getAbsolutePath())) {
+                            paths.add(String.valueOf(path));
+                        }
+                        //If there are not text files
+                        if(paths.size()==0){
+                            JOptionPane.showMessageDialog(null, "Deck is empty","",JOptionPane.ERROR_MESSAGE);
+                        }
+                        else{
+                            //Iterate over each text file and add flashcards
+                            for(int i=0;i<paths.size();i++){
+                                ArrayList<Flashcard> flashcards_from_file = CustomFile.readSerializefFlashcard(paths.get(i));
+                                //Add each flashcard into overal set of flashcards
+                                flashcards.addAll(flashcards_from_file);
+                            }
+
+                            //If set of flashcards is empty
+                            if(flashcards.size()==0){
+                                JOptionPane.showMessageDialog(null, "Deck is empty","",JOptionPane.ERROR_MESSAGE);
+                            }
+                            else{
+                                window.remove(window.getContentPane().getComponent(1)); //removes component in center panel
+                                flashcard_panel = new FlashcardPanel(flashcards);
+                                window.add(flashcard_panel, BorderLayout.CENTER);
+                                RefreshView();
+                            }
+
+
+                        }
+
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
                 }
 
 
