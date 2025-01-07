@@ -247,13 +247,20 @@ public class GuiWindow
                 {
                     int confirmation = JOptionPane.showConfirmDialog(
                             null,
-                            "Are you sure you want to delete " + selected_file.getName() + " file?",
+                            "Are you sure you want to delete: " + selected_file.getName(),
                             "Confirm Delete",
                             JOptionPane.YES_NO_OPTION
                     );
                     if (confirmation == JOptionPane.YES_OPTION)
                     {
-                        selected_file.delete();
+                        if(selected_file.isFile())
+                        {
+                            selected_file.delete();
+                        }
+                        else if(selected_file.isDirectory())
+                        {
+                            FlashcardLibrary.deleteFolder(selected_file);
+                        }
                         dictionary_panel.refreshTree();
                     }
                 }
