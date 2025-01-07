@@ -361,7 +361,6 @@ public class GuiAddFlashcard
 
             option_fields[i] = new JTextField();
             option_panels[i] = new JPanel();
-            option_panels[i].setBackground(Color.yellow);
             option_panels[i].add(option_radio_button[i]);
             option_panels[i].add(option_fields[i]);
             option_panels[i].setLayout(new BoxLayout(option_panels[i], BoxLayout.X_AXIS));

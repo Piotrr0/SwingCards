@@ -32,7 +32,7 @@ public class GuiWindow
     private final JButton catalogues_button;
     private final JButton add_button;
     private final JButton inspect_button;
-    private final JButton profile_button;
+
     private final JButton add_folder_button;
     private final JButton delete_button;
     //temporary
@@ -54,7 +54,7 @@ public class GuiWindow
         add_button = createMenuButton("Add Deck/Flashcard");
         add_folder_button = createMenuButton("Add Folder");
         inspect_button = createMenuButton("Inspect");
-        profile_button = createMenuButton("Profile");
+
         delete_button = createMenuButton("Delete");
 
         //temporary
@@ -121,7 +121,7 @@ public class GuiWindow
         menu.add(add_button);
         menu.add(add_folder_button);
         menu.add(inspect_button);
-        menu.add(profile_button);
+
         menu.add(delete_button);
         //temporary
         menu.add(work_test);
@@ -212,11 +212,22 @@ public class GuiWindow
                     if(flashcards.size()==0){
                         JOptionPane.showMessageDialog(null, "Deck is empty","",JOptionPane.ERROR_MESSAGE);
                     }
-
+                    //There is at least one flashcard in deck
                     else {
-                        for (int i = 0; i < flashcards.size(); i++) {
-                            System.out.println(flashcards.get(i) + ", type of flashcard " + flashcards.get(i).type);
-                        }
+                        window.remove(window.getContentPane().getComponent(1)); //removes component in center panel
+                        GuiInspect inspect_panel = new GuiInspect(selected_file.getAbsolutePath());
+
+
+                        // Wrap the inspect_panel in a JScrollPane
+                        JScrollPane scrollPane = new JScrollPane(inspect_panel);
+                        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+                        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+
+                        window.add(scrollPane);
+
+                        window.revalidate();
+
                     }
                 }
                 else{

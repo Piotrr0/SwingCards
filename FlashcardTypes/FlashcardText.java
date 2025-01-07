@@ -71,4 +71,8 @@ public class FlashcardText extends Flashcard   {
         }
         //no need to change to 0 it already is 0
     }
+
+    public String getAnswer(){
+        return this.answer;
+    }
 }
