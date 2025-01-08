@@ -15,7 +15,7 @@ public abstract class Flashcard implements Serializable {
     public abstract String printOut(int which_one); //prints out specific part of flashcard for outputting
     abstract public String toString();
     abstract void checkAnswer();
-    abstract void overwriteValues(String new_message, int which_one); //function for changing content of flashcardsz
+    public abstract void overwriteValues(String new_message, int which_one); //function for changing content of flashcardsz
 
     public String getQuestion(){
         return question;

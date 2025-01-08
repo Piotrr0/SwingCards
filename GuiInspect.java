@@ -1,7 +1,10 @@
 import FlashcardTypes.Flashcard;
+import FlashcardTypes.FlashcardTF;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 /**
@@ -12,18 +15,47 @@ public class GuiInspect extends JPanel {
 
     private String deck_path;
     private ArrayList<Flashcard>flashcards;
-    private ArrayList<singleFlashcard> flashcard_panels;
+    private final ArrayList<singleFlashcard> flashcard_panels = new ArrayList<>();
 
     public GuiInspect(String path){
+
+        //each time we invoke GuiInspect we want to make sure that number of single flashcards i initially zero
         this.deck_path = path;
         //Acquire all flashcards from given file
         flashcards = CustomFile.readSerializefFlashcard(path);
         System.out.println(flashcards);
         this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
+        //We gather panels for each question
         getDataForPanels();
 
+        //Now we just iterate through a list of panels and just display them
+        for(int i =0;i<flashcard_panels.size();i++){
+            this.add(flashcard_panels.get(i));
+        }
 
+        //We create panel for save and close buttons
+        JPanel button_panel = new JPanel();
+        JButton save_button = new JButton("Save");
+        button_panel.add(save_button);
+        this.add(button_panel);
+
+        //Binding save button for saving flashcards
+        save_button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("It should save ");
+                //Make flashcards list empty
+                flashcards.clear();
+                CustomFile.clear(deck_path);
+                //Iterate through all the panels and save flashcards they store
+                for (int i = 0;i<flashcard_panels.size();i++) {
+                    flashcards.add(flashcard_panels.get(i).returnFlashcard());
+                    CustomFile.serializeFlashcard(deck_path,flashcards.get(i));
+                }
+
+            }
+        });
 
     }
 
@@ -32,23 +64,28 @@ public class GuiInspect extends JPanel {
      * */
     private void getDataForPanels(){
         for (Flashcard flashcard : flashcards) {
+            //We will create a single flashcard
+            singleFlashcard sf;
             switch (flashcard.type) {
+                //Any case is POLYMORPHISM becase we create particular types of flashcards
                 //Create object of text flashcard
                 case 't':
-                    singleFlashcard s = new singleTextFlashcardPanel(flashcard);
-                    add(s);
+                    sf = new singleTextFlashcardPanel(flashcard);
+                    flashcard_panels.add(sf);
                     break;
                 //Create object of true/false flashcard
                 case 'f':
-                    singleFlashcard x = new singleTrueFalseFlashcardPanel(flashcard);
-                    add(x);
+                    sf = new singleTrueFalseFlashcardPanel(flashcard);
+                    flashcard_panels.add(sf);
+
                     break;
                     //Create object of abcd flashcard
                 case 'a':
-                    singleFlashcard g = new singleABCDFlashcard(flashcard);
-                    add(g);
+                    sf = new singleABCDFlashcard(flashcard);
+                    flashcard_panels.add(sf);
                     break;
             }
+
         }
     }
 
@@ -57,10 +94,41 @@ public class GuiInspect extends JPanel {
 
     abstract class singleFlashcard extends JPanel{
         protected JButton remove_button;
-        public singleFlashcard(){
+
+
+        //It stores the flashcard
+        Flashcard flashcard;
+        public singleFlashcard(Flashcard flashcard){
             this.remove_button = new JButton("Remove");
             this.remove_button.setAlignmentX(Component.CENTER_ALIGNMENT);
+            this.flashcard = flashcard;
+
+
+
+            //programming remove button
+            //Binding save button for saving flashcards
+            remove_button.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    //delete current flashcard
+                    GuiInspect.this.remove(singleFlashcard.this);
+
+                    flashcard_panels.remove(singleFlashcard.this);
+
+                    //revalidate view
+                    GuiInspect.this.revalidate();
+
+
+                }
+            });
+
         }
+
+        /**
+         * This function should return flashcard based on values from panel
+         * */
+        public abstract Flashcard returnFlashcard();
+
     }
 
     /**
@@ -72,6 +140,7 @@ public class GuiInspect extends JPanel {
         private JTextField question_field;
         private JTextField answer_field;
         public singleTextFlashcardPanel(Flashcard flashcard){
+            super(flashcard);
 
 
             this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
@@ -104,17 +173,32 @@ public class GuiInspect extends JPanel {
             separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1)); // Stretch width, fixed height
             separator.setForeground(Color.BLACK); // Optional: Change color
             add(remove_button);
+            add(Box.createVerticalStrut(10)); //vertical distance
+
             add(separator);
+        }
+
+        @Override
+        public Flashcard returnFlashcard() {
+            this.flashcard.overwriteValues(question_field.getText(),0);
+            this.flashcard.overwriteValues(answer_field.getText(),1);
+
+            return this.flashcard;
         }
     }
 
+    /**
+     * Inner class that is used to display true/false flashcards
+     * */
     class singleTrueFalseFlashcardPanel extends singleFlashcard{
         private JLabel question_label;
         private JTextField question_field;
         private  JRadioButton trueButton;
         private  JRadioButton falseButton;
+        private  ButtonGroup group;
         public singleTrueFalseFlashcardPanel(Flashcard flashcard){
 
+            super(flashcard);
 
             this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -160,7 +244,7 @@ public class GuiInspect extends JPanel {
 
 
 
-            ButtonGroup group = new ButtonGroup();
+            group = new ButtonGroup();
             group.add(trueButton);
             group.add(falseButton);
 
@@ -174,15 +258,43 @@ public class GuiInspect extends JPanel {
             separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1)); // Stretch width, fixed height
             separator.setForeground(Color.BLACK); // Optional: Change color
             add(remove_button);
+            add(Box.createVerticalStrut(10)); //vertical distance
             add(separator);
+        }
+
+        @Override
+        public Flashcard returnFlashcard() {
+            System.out.println(group.getSelection().getActionCommand());
+            String selected_answer = group.getSelection().getActionCommand();
+
+            //Overwrite question
+            this.flashcard.overwriteValues(question_field.getText(),0);
+
+
+
+            //overrwrite correct answer
+            if(selected_answer=="true")
+                this.flashcard.overwriteValues("",1);
+            else
+                this.flashcard.overwriteValues("",2);
+
+            return flashcard;
         }
     }
 
+    /**
+     * Inner class that is used to display abcd flashcards
+     * */
     class singleABCDFlashcard extends singleFlashcard{
         private JLabel question_label;
         private JTextField question_field;
+        private JRadioButton [] option_radio_button;
+        private JTextField[] option_fields;
+        private JPanel[] option_panels;
+        private ButtonGroup group;
         public singleABCDFlashcard(Flashcard flashcard){
 
+            super(flashcard);
 
             this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
@@ -204,15 +316,15 @@ public class GuiInspect extends JPanel {
             int n = Integer.valueOf(flashcard.printOut(3));
 
             //We create arrays of radio buttons,text fields and panels
-            JRadioButton [] option_radio_button =  new JRadioButton[n];
-            JTextField[] option_fields = new JTextField[n];
-            JPanel[] option_panels = new JPanel[n]; //Option panel =radio_button + text_field
+            option_radio_button =  new JRadioButton[n];
+            option_fields = new JTextField[n];
+            option_panels = new JPanel[n]; //Option panel =radio_button + text_field
 
             JPanel lower_panel = new JPanel();
             lower_panel.setLayout(new BoxLayout(lower_panel, BoxLayout.Y_AXIS));
 
             //Group for options(answers)
-            ButtonGroup group = new ButtonGroup();
+            group = new ButtonGroup();
 
 
             //All options should have the same GUIS thus we use a loop.
@@ -248,7 +360,21 @@ public class GuiInspect extends JPanel {
             separator.setMaximumSize(new Dimension(Integer.MAX_VALUE, 1)); // Stretch width, fixed height
             separator.setForeground(Color.BLACK); // Optional: Change color
             add(remove_button);
+            add(Box.createVerticalStrut(10)); //vertical distance
             add(separator);
+        }
+
+        @Override
+        public Flashcard returnFlashcard() {
+            String selected_answer = group.getSelection().getActionCommand();
+            this.flashcard.overwriteValues(question_field.getText(),0);
+            this.flashcard.overwriteValues(selected_answer,1);
+            //override option values
+            this.flashcard.overwriteValues(option_fields[0].getText(),3);
+            this.flashcard.overwriteValues(option_fields[1].getText(),4);
+            this.flashcard.overwriteValues(option_fields[2].getText(),5);
+            this.flashcard.overwriteValues(option_fields[3].getText(),6);
+            return flashcard;
         }
     }
 

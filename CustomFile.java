@@ -139,6 +139,25 @@ abstract public class CustomFile {
         return textFiles;
     }
 
+    /**
+     * Function makes file empty/clears it
+     * @return if clearing file was successfull
+     * */
+    public static boolean clear(String file_path)  {
+
+
+        try{
+            PrintWriter pw = new PrintWriter(file_path);
+            pw.close();
+            return true;
+        }
+
+        catch (Exception e){
+            return false;
+        }
+
+
+    }
 
 
     }
