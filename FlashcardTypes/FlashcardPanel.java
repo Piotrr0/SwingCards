@@ -60,6 +60,7 @@ public class FlashcardPanel extends JPanel implements FlashcardTestUIInterface{
     private final JButton check = new JButton("Check");
     private final JButton next = new JButton("Next");
     private final JButton show = new JButton("Show Answer");
+    private final JButton skip = new JButton ("Skip");
 
     private final JButton infinite = new JButton("infinite");
     private final JButton finite = new JButton(" finite ");
@@ -95,14 +96,14 @@ public class FlashcardPanel extends JPanel implements FlashcardTestUIInterface{
 
         addButtonListeners();
         chooseLearningMode();
-        //showInitialUI();
 
     }
 
     public void chooseLearningMode()
     {
         add(Box.createVerticalStrut(10));
-        JLabel mode_choose = new JLabel("Choose Learning Mode");
+        //spaces prevent text from being cut off
+        JLabel mode_choose = new JLabel(" Choose Learning Mode ");
         mode_choose.setAlignmentX(CENTER_ALIGNMENT);
         add(mode_choose);
         add(Box.createVerticalStrut(10));
@@ -119,12 +120,13 @@ public class FlashcardPanel extends JPanel implements FlashcardTestUIInterface{
         add(Box.createVerticalStrut(10));
         if(finite_mode)
         {
-            JLabel progress = new JLabel("Progress: " + how_many_correct + "\\" + how_many_total);
+            JLabel progress = new JLabel(" Progress: " + how_many_correct + "\\" + how_many_total + " ");
             progress.setAlignmentX(CENTER_ALIGNMENT);
             add(progress);
             add(Box.createVerticalStrut(10));
         }
-        JLabel question = new JLabel(flashcards_list.get(counter).printOut(0));
+        //spaces prevent text from being cut off
+        JLabel question = new JLabel(" " + flashcards_list.get(counter).printOut(0) + " ");
         question.setAlignmentX(CENTER_ALIGNMENT);
         add(question);
         add(Box.createVerticalStrut(10));
@@ -221,6 +223,12 @@ public class FlashcardPanel extends JPanel implements FlashcardTestUIInterface{
         horizontal_box.add(next);
         horizontal_box.add(Box.createRigidArea(new Dimension(10, 0)));
         horizontal_box.add(show);
+
+        if(finite_mode) //skip button for finite mode
+        {
+            horizontal_box.add(Box.createRigidArea(new Dimension(10, 0)));
+            horizontal_box.add(skip);
+        }
         return horizontal_box;
     }
 
@@ -360,6 +368,37 @@ public class FlashcardPanel extends JPanel implements FlashcardTestUIInterface{
                     flashcards_list.remove(counter);//removing correctly answered question
                     how_many_correct++;
                 }
+                answered_correctly = false;
+                answer = "";
+                grade = "";
+                answer_field.setText("");
+                removeAll();//clears the thing and repaints with new flashcard yay
+                repaint();
+                if(flashcards_list.isEmpty())
+                {
+                    add(Box.createVerticalStrut(10));
+                    JLabel complete = new JLabel("All Questions Answered Correctly!");
+                    complete.setAlignmentX(CENTER_ALIGNMENT);
+                    add(complete);
+                    revalidate();
+                }
+                else
+                {
+                    counter = ThreadLocalRandom.current().nextInt(0, flashcards_list.size());
+                    showInitialUI();
+                    revalidate();
+                }
+            }
+        });
+
+        skip.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                flashcards_list.get(counter).is_correct=false;
+
+                flashcards_list.remove(counter);//removing skipped question
+                how_many_correct++;
+
                 answered_correctly = false;
                 answer = "";
                 grade = "";

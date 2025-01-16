@@ -35,8 +35,7 @@ public class GuiWindow
 
     private final JButton add_folder_button;
     private final JButton delete_button;
-    //temporary
-    private final JButton work_test; //temporary button for testing flashcards;
+    private final JButton learning_button; //temporary button for testing flashcards;
 
     private File flashcards_directory;
     private DictionaryPanel dictionary_panel;
@@ -57,8 +56,7 @@ public class GuiWindow
 
         delete_button = createMenuButton("Delete");
 
-        //temporary
-        work_test = createMenuButton("flashcard test");
+        learning_button = createMenuButton("Learn Flashcards");
 
         setupLayout();
         setupEventListeners();
@@ -73,7 +71,6 @@ public class GuiWindow
     {
         JFrame frame = new JFrame("Flashcards");
         frame.setSize(DEFAULT_WINDOW_WIDTH, DEFAULT_WINDOW_HEIGHT);
-        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setLayout(new BorderLayout());
         return frame;
@@ -123,8 +120,7 @@ public class GuiWindow
         menu.add(inspect_button);
 
         menu.add(delete_button);
-        //temporary
-        menu.add(work_test);
+        menu.add(learning_button);
 
         // Add panels to main window
         window.add(menu, BorderLayout.NORTH);
@@ -157,6 +153,7 @@ public class GuiWindow
                     {
                         deck.createNewFile();
                         dictionary_panel.refreshTree();
+                        CustomFile.appendToReport("User added a new deck: " + deck_name+".txt", "raport.txt");
                     }
                     catch (IOException ex) {
                         throw new RuntimeException(ex);
@@ -185,6 +182,7 @@ public class GuiWindow
                     if (dir_name != null)
                     {
                         File directory = new File(selected_file, dir_name);
+                        CustomFile.appendToReport("User added a new directory: " + dir_name, "raport.txt");
                         if(directory.mkdirs())
                         {
                             dictionary_panel.refreshTree();
@@ -200,41 +198,47 @@ public class GuiWindow
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                is_inspecting = !is_inspecting;
-                System.out.println(is_inspecting);
+                if(selected_file != null) {
+                    is_inspecting = !is_inspecting;
+                    System.out.println(is_inspecting);
 
-                //You can only inspect files,not entire folders
-                if(selected_file.getName().endsWith(".txt")){
-                    //It allows you tou get ArrayList of all Flashcards from given file
-                    ArrayList<Flashcard>flashcards =  CustomFile.readSerializefFlashcard(selected_file.getAbsolutePath());
+                    //You can only inspect files,not entire folders
+                    if (selected_file.getName().endsWith(".txt")) {
+                        //It allows you tou get ArrayList of all Flashcards from given file
+                        ArrayList<Flashcard> flashcards = CustomFile.readSerializefFlashcard(selected_file.getAbsolutePath());
 
 
-                    if(flashcards.size()==0){
-                        JOptionPane.showMessageDialog(null, "Deck is empty","",JOptionPane.ERROR_MESSAGE);
+                        if (flashcards.size() == 0) {
+                            JOptionPane.showMessageDialog(null, "Deck is empty", "", JOptionPane.ERROR_MESSAGE);
+                        }
+                        //There is at least one flashcard in deck
+                        else {
+                            window.remove(window.getContentPane().getComponent(1)); //removes component in center panel
+                            GuiInspect inspect_panel = new GuiInspect(selected_file.getAbsolutePath());
+                            CustomFile.appendToReport("User started editing flashcards from: " + selected_file.getName(), "raport.txt");
+
+
+                            // Wrap the inspect_panel in a JScrollPane
+                            JScrollPane scrollPane = new JScrollPane(inspect_panel);
+                            scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+                            scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+
+                            window.add(scrollPane);
+
+                            window.revalidate();
+
+                        }
+                    } else {
+                        System.out.println("You are trying to inspect entire folder!");
+                        JOptionPane.showMessageDialog(null, "Can inspect files only!", "", JOptionPane.ERROR_MESSAGE);
                     }
-                    //There is at least one flashcard in deck
-                    else {
-                        window.remove(window.getContentPane().getComponent(1)); //removes component in center panel
-                        GuiInspect inspect_panel = new GuiInspect(selected_file.getAbsolutePath());
 
-
-                        // Wrap the inspect_panel in a JScrollPane
-                        JScrollPane scrollPane = new JScrollPane(inspect_panel);
-                        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-                        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-
-                        window.add(scrollPane);
-
-                        window.revalidate();
-
-                    }
                 }
-                else{
-                    System.out.println("You are trying to inspect entire folder!");
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "Choose a file first","",JOptionPane.ERROR_MESSAGE);
                 }
-
-
 
             }
         });
@@ -255,10 +259,12 @@ public class GuiWindow
                     {
                         if(selected_file.isFile())
                         {
+                            CustomFile.appendToReport("User deleted: " + selected_file.getName(), "raport.txt");
                             selected_file.delete();
                         }
                         else if(selected_file.isDirectory())
                         {
+                            CustomFile.appendToReport("User deleted: " + selected_file.getName() + " directory", "raport.txt");
                             FlashcardLibrary.deleteFolder(selected_file);
                         }
                         dictionary_panel.refreshTree();
@@ -267,75 +273,76 @@ public class GuiWindow
             }
         });
 
-        //Binding test button
-        work_test.addActionListener(new ActionListener() {
+        //Binding learning button
+        learning_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //FLASHCARD ARRAY HAS TO BE CREATED HERE!!!!
-                ArrayList<Flashcard> flashcards = new ArrayList<>();
+
+                if(selected_file != null) {
+
+                    //FLASHCARD ARRAY HAS TO BE CREATED HERE!!!!
+                    ArrayList<Flashcard> flashcards = new ArrayList<>();
+
+                    if (selected_file.getName().endsWith(".txt")) {
+                        //It allows you tou get ArrayList of all Flashcards from given file
+                        flashcards = CustomFile.readSerializefFlashcard(selected_file.getAbsolutePath());
 
 
-
-                //You can only select files to have test
-                if(selected_file.getName().endsWith(".txt")){
-                    //It allows you tou get ArrayList of all Flashcards from given file
-                    flashcards =  CustomFile.readSerializefFlashcard(selected_file.getAbsolutePath());
-
-
-                    if(flashcards.size()==0){
-                        JOptionPane.showMessageDialog(null, "Deck is empty","",JOptionPane.ERROR_MESSAGE);
+                        if (flashcards.size() == 0) {
+                            JOptionPane.showMessageDialog(null, "Deck is empty", "", JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            CustomFile.appendToReport("User started learning flashcards from: " + selected_file.getName(), "raport.txt");
+                            window.remove(window.getContentPane().getComponent(1)); //removes component in center panel
+                            flashcard_panel = new FlashcardPanel(flashcards);
+                            window.add(flashcard_panel, BorderLayout.CENTER);
+                            RefreshView();
+                        }
                     }
-
+                    //You want to take a test from the entire folder
                     else {
-                        window.remove(window.getContentPane().getComponent(1)); //removes component in center panel
-                        flashcard_panel = new FlashcardPanel(flashcards);
-                        window.add(flashcard_panel, BorderLayout.CENTER);
-                        RefreshView();
+
+                        try {
+                            //Get all .txt files recursively and convert them into array of strings
+                            ArrayList<String> paths = new ArrayList<>();
+                            for (Path path : CustomFile.findAllTextFiles(selected_file.getAbsolutePath())) {
+                                paths.add(String.valueOf(path));
+                            }
+                            //If there are not text files
+                            if (paths.size() == 0) {
+                                JOptionPane.showMessageDialog(null, "Deck is empty", "", JOptionPane.ERROR_MESSAGE);
+                            } else {
+                                //Iterate over each text file and add flashcards
+                                for (int i = 0; i < paths.size(); i++) {
+                                    ArrayList<Flashcard> flashcards_from_file = CustomFile.readSerializefFlashcard(paths.get(i));
+                                    //Add each flashcard into overal set of flashcards
+                                    flashcards.addAll(flashcards_from_file);
+                                }
+
+                                //If set of flashcards is empty
+                                if (flashcards.size() == 0) {
+                                    JOptionPane.showMessageDialog(null, "Deck is empty", "", JOptionPane.ERROR_MESSAGE);
+                                } else {
+                                    CustomFile.appendToReport("User started learning flashcards from: " + selected_file.getName() + " directory", "raport.txt");
+                                    window.remove(window.getContentPane().getComponent(1)); //removes component in center panel
+                                    flashcard_panel = new FlashcardPanel(flashcards);
+                                    window.add(flashcard_panel, BorderLayout.CENTER);
+                                    RefreshView();
+                                }
+
+
+                            }
+
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
+
+
                 }
-                //You want to take a test from the entire folder
-                else{
-
-                    try {
-                        //Get all .txt files recursively and convert them into array of strings
-                        ArrayList<String>paths = new ArrayList<>();
-                        for (Path path : CustomFile.findAllTextFiles(selected_file.getAbsolutePath())) {
-                            paths.add(String.valueOf(path));
-                        }
-                        //If there are not text files
-                        if(paths.size()==0){
-                            JOptionPane.showMessageDialog(null, "Deck is empty","",JOptionPane.ERROR_MESSAGE);
-                        }
-                        else{
-                            //Iterate over each text file and add flashcards
-                            for(int i=0;i<paths.size();i++){
-                                ArrayList<Flashcard> flashcards_from_file = CustomFile.readSerializefFlashcard(paths.get(i));
-                                //Add each flashcard into overal set of flashcards
-                                flashcards.addAll(flashcards_from_file);
-                            }
-
-                            //If set of flashcards is empty
-                            if(flashcards.size()==0){
-                                JOptionPane.showMessageDialog(null, "Deck is empty","",JOptionPane.ERROR_MESSAGE);
-                            }
-                            else{
-                                window.remove(window.getContentPane().getComponent(1)); //removes component in center panel
-                                flashcard_panel = new FlashcardPanel(flashcards);
-                                window.add(flashcard_panel, BorderLayout.CENTER);
-                                RefreshView();
-                            }
-
-
-                        }
-
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
-                    }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "Choose a file or directory first","",JOptionPane.ERROR_MESSAGE);
                 }
-
-
-
-
 
 
             }
