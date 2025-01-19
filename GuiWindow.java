@@ -148,15 +148,21 @@ public class GuiWindow
                 else if(selected_file != null && selected_file.isDirectory())
                 {
                     String deck_name = JOptionPane.showInputDialog(JOptionPane.getRootFrame(), "Enter deck name:", "Add Deck", JOptionPane.PLAIN_MESSAGE);
-                    File deck = new File(selected_file, deck_name+".txt");
-                    try
+                    if (deck_name != null && !deck_name.trim().isEmpty())
                     {
-                        deck.createNewFile();
-                        dictionary_panel.refreshTree();
-                        CustomFile.appendToReport("User added a new deck: " + deck_name+".txt", "raport.txt");
-                    }
-                    catch (IOException ex) {
-                        throw new RuntimeException(ex);
+                        File deck = new File(selected_file, deck_name.trim() + ".txt");
+                        try
+                        {
+                            if (deck.createNewFile())
+                            {
+                                dictionary_panel.refreshTree();
+                                CustomFile.appendToReport("User added a new deck: " + deck_name.trim() + ".txt", "raport.txt");
+                            }
+                        }
+                        catch (IOException ex)
+                        {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 }
             }
