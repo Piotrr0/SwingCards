@@ -12,43 +12,36 @@ import java.util.Arrays;
 import java.util.Enumeration;
 
 /* Gui that pops up while add button is clicked */
-public class GuiAddFlashcard
-{
+public class GuiAddFlashcard {
     private final JButton add_button;
     private final JButton close_button;
 
     //It is a group of radio buttons, each radio button represents different flashcard type
     private final ButtonGroup flashcard_type_group;
-
-
-
     private String current_file;
-
-
     private final JFrame add_flashcard_window;
 
     /**
      * Function is used to return the string based on selected radio button
+     *
      * @param buttonGroup is a group of radio buttons
      * @return <code>getActionCommand()</code> of selected radio button
-     * */
+     */
     private String getSelectedButtonActionCommand(ButtonGroup buttonGroup) {
-        for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements();) {
+        for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements(); ) {
             AbstractButton button = buttons.nextElement();
 
             if (button.isSelected()) {
                 return button.getActionCommand();
             }
         }
-
         return null;
     }
 
     /**
      * @param filename indicate the name of catalogue we are adding a flashcard to.
-     * */
-    GuiAddFlashcard(String title, int width, int height,String filename)
-    {
+     */
+    GuiAddFlashcard(String title, int width, int height, String filename) {
         // Init JFrame
         this.add_flashcard_window = new JFrame(title);
         add_flashcard_window.setSize(width, height);
@@ -57,24 +50,19 @@ public class GuiAddFlashcard
 
         this.current_file = filename;
 
-
         //JPanel for input section
         JPanel input_panel = new JPanel();
         //top to bottom component placement
         input_panel.setLayout(new BoxLayout(input_panel, BoxLayout.Y_AXIS));
 
-
-
         // Init buttons
         add_button = new JButton("Add");
         close_button = new JButton("Close");
 
-
-
         add_flashcard_window.add(input_panel, BorderLayout.NORTH);
 
         //JPanel that allows user to choose desired flashcard type (e.g writing or yes/no question)
-        JPanel flashcard_type_panel= new JPanel();
+        JPanel flashcard_type_panel = new JPanel();
         //top to bottom component placement
         flashcard_type_panel.setLayout(new BoxLayout(flashcard_type_panel, BoxLayout.Y_AXIS));
 
@@ -87,13 +75,10 @@ public class GuiAddFlashcard
         text_type.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                displayAddTextFlashcardGui(input_panel,filename);
-
+                displayAddTextFlashcardGui(input_panel, filename);
                 input_panel.revalidate();
             }
         });
-
 
 
         text_type.setActionCommand("text");
@@ -108,8 +93,7 @@ public class GuiAddFlashcard
         tf_type.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayAddTFFlashcardGui(input_panel,filename);
-
+                displayAddTFFlashcardGui(input_panel, filename);
                 input_panel.revalidate();
             }
         });
@@ -119,11 +103,12 @@ public class GuiAddFlashcard
         abcd_type.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayAddABCDFlashcardGui(input_panel,filename);
+                displayAddABCDFlashcardGui(input_panel, filename);
 
                 input_panel.revalidate();
             }
         });
+
         abcd_type.setActionCommand("abcd");
         flashcard_type_group.add(text_type);
         flashcard_type_group.add(tf_type);
@@ -135,13 +120,7 @@ public class GuiAddFlashcard
         flashcard_type_panel.add(tf_type);
         flashcard_type_panel.add(abcd_type);
 
-
-
         add_flashcard_window.add(flashcard_type_panel, BorderLayout.CENTER);
-
-
-
-
 
         // Create a panel at the bottom for the Add and Close buttons
         JPanel bottom_panel = new JPanel(new FlowLayout(FlowLayout.RIGHT)); // Align buttons to the right
@@ -149,10 +128,7 @@ public class GuiAddFlashcard
         bottom_panel.add(close_button);
 
         add_flashcard_window.add(bottom_panel, BorderLayout.SOUTH); // Add to the bottom
-
         addButtonListeners();
-
-
 
         add_flashcard_window.setVisible(true);
     }
@@ -160,8 +136,8 @@ public class GuiAddFlashcard
 
     /**
      * This function changes <code>input_panel</code> so you can create text flashcard. It takes responsibility of binding and rebinding add_button
-     * */
-    private void displayAddTextFlashcardGui(JPanel input_panel,String filename){
+     */
+    private void displayAddTextFlashcardGui(JPanel input_panel, String filename) {
         input_panel.removeAll();
         input_panel.repaint();
         input_panel.revalidate();
@@ -171,7 +147,6 @@ public class GuiAddFlashcard
             add_button.removeActionListener(listener);
         }
 
-
         //input for reading question from user
         JTextField text_question = new JTextField();
         text_question.setMaximumSize(new Dimension(300, text_question.getPreferredSize().height));
@@ -179,7 +154,6 @@ public class GuiAddFlashcard
         //input for reading answer from user
         JTextField text_answer = new JTextField();
         text_answer.setMaximumSize(new Dimension(300, text_question.getPreferredSize().height));
-
 
         JLabel add_question = new JLabel("Enter Question:");
         add_question.setAlignmentX(Component.CENTER_ALIGNMENT); //centers the field
@@ -192,16 +166,14 @@ public class GuiAddFlashcard
         input_panel.add(Box.createVerticalStrut(10)); //vertical distance
         input_panel.add(text_question);
         input_panel.add(Box.createVerticalStrut(10)); //vertical distance
-
         input_panel.add(Box.createVerticalStrut(40)); //vertical distance
 
         //adding answer
         input_panel.add(add_answer);
-
         input_panel.add(text_answer);
 
 
-        JLabel catalogue_name_label = new JLabel("You are adding a flashcard to: "+filename);
+        JLabel catalogue_name_label = new JLabel("You are adding a flashcard to: " + filename);
         catalogue_name_label.setAlignmentX(Component.CENTER_ALIGNMENT); //centers the field
         input_panel.add(catalogue_name_label);
 
@@ -216,25 +188,23 @@ public class GuiAddFlashcard
                 //We create flashcard based on its type,POLYMORPHISM!!!!!!!
                 Flashcard new_flashcard;
                 new_flashcard = new FlashcardText(text_question.getText(), text_answer.getText()); //Polymorpism
-                CustomFile.serializeFlashcard(current_file,new_flashcard);
+                CustomFile.serializeFlashcard(current_file, new_flashcard);
                 System.out.println("Im trying to add text_flashcard");
 
-                CustomFile.appendToReport("User added text flashcard:["+new_flashcard+"]","raport.txt",true);
+                CustomFile.appendToReport("User added text flashcard:[" + new_flashcard + "]", "raport.txt", true);
                 JOptionPane.showMessageDialog(add_flashcard_window, "Flashcard added!");
                 add_flashcard_window.dispose(); // Close the window
-
             }
         });
     }
 
     /**
      * This function changes <code>input_panel</code> so you can create True/False flashcard. It takes responsibility of binding and rebinding add_button
-     * */
-    private  void displayAddTFFlashcardGui(JPanel input_panel,String filename){
+     */
+    private void displayAddTFFlashcardGui(JPanel input_panel, String filename) {
         input_panel.removeAll();
         input_panel.repaint();
         input_panel.revalidate();
-
 
         // Remove all existing listeners from the add_button
         for (ActionListener listener : add_button.getActionListeners()) {
@@ -248,7 +218,6 @@ public class GuiAddFlashcard
         JTextField question_field = new JTextField();
         question_field.setMaximumSize(new Dimension(300, question_field.getPreferredSize().height));
         question_field.setAlignmentX(Component.CENTER_ALIGNMENT);
-
 
 
         input_panel.add(question_label);
@@ -276,7 +245,7 @@ public class GuiAddFlashcard
 
         input_panel.add(Box.createVerticalStrut(10)); //vertical distance
 
-        JLabel catalogue_name_label = new JLabel("You are adding a flashcard to: "+filename);
+        JLabel catalogue_name_label = new JLabel("You are adding a flashcard to: " + filename);
         catalogue_name_label.setAlignmentX(Component.CENTER_ALIGNMENT); //centers the field
         input_panel.add(catalogue_name_label);
 
@@ -291,21 +260,21 @@ public class GuiAddFlashcard
                 Flashcard new_flashcard;
                 String selected_button = getSelectedButtonActionCommand(group);
                 Boolean answer = false;
-                if(selected_button=="true")
+                if (selected_button == "true")
                     answer = true;
-                new_flashcard = new FlashcardTF(question_field.getText(),answer);
-                CustomFile.serializeFlashcard(current_file,new_flashcard);
+                new_flashcard = new FlashcardTF(question_field.getText(), answer);
+                CustomFile.serializeFlashcard(current_file, new_flashcard);
 
-                System.out.println("Im trying to add tf_flashcard:"+new_flashcard);
+                System.out.println("Im trying to add tf_flashcard:" + new_flashcard);
 
-                CustomFile.appendToReport("User added True/False flashcard:["+new_flashcard+"]","raport.txt",true);
+                CustomFile.appendToReport("User added True/False flashcard:[" + new_flashcard + "]", "raport.txt", true);
                 JOptionPane.showMessageDialog(add_flashcard_window, "Flashcard added!");
                 add_flashcard_window.dispose(); // Close the window
             }
         });
     }
 
-    private  void displayAddABCDFlashcardGui(JPanel input_panel,String filename){
+    private void displayAddABCDFlashcardGui(JPanel input_panel, String filename) {
         input_panel.removeAll();
         input_panel.repaint();
         input_panel.revalidate();
@@ -318,8 +287,6 @@ public class GuiAddFlashcard
         JPanel upper_panel = new JPanel();
         upper_panel.setLayout(new BoxLayout(upper_panel, BoxLayout.Y_AXIS));
 
-
-
         JLabel question_label = new JLabel("Enter Question:");
         upper_panel.add(question_label);
         question_label.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -331,16 +298,13 @@ public class GuiAddFlashcard
         upper_panel.setAlignmentX(Component.CENTER_ALIGNMENT);
         input_panel.add(upper_panel);
 
-
-
-
         //We create lower panel that stores ABCD options
         JPanel lower_panel = new JPanel();
         lower_panel.setAlignmentX(Component.CENTER_ALIGNMENT);
         lower_panel.setLayout(new BoxLayout(lower_panel, BoxLayout.Y_AXIS));
 
         //We create arrays of radio buttons,text fields and panels
-        JRadioButton [] option_radio_button =  new JRadioButton[4];
+        JRadioButton[] option_radio_button = new JRadioButton[4];
         JTextField[] option_fields = new JTextField[4];
         JPanel[] option_panels = new JPanel[4]; //Option panel =radio_button + text_field
         lower_panel.add(Box.createVerticalStrut(30)); //vertical distance
@@ -348,16 +312,14 @@ public class GuiAddFlashcard
         //Group for options(answers)
         ButtonGroup group = new ButtonGroup();
 
-
         //All options should have the same GUIS thus we use a loop.
-        for(int i = 0;i<option_panels.length;i++){
+        for (int i = 0; i < option_panels.length; i++) {
             lower_panel.add(Box.createVerticalStrut(10)); //vertical distance
 
-            option_radio_button[i] = new JRadioButton("Option"+(i+1));
+            option_radio_button[i] = new JRadioButton("Option" + (i + 1));
             option_radio_button[i].setAlignmentX(Component.LEFT_ALIGNMENT);
-            option_radio_button[i].setActionCommand(String.valueOf(i+1));
+            option_radio_button[i].setActionCommand(String.valueOf(i + 1));
             group.add(option_radio_button[i]);
-
 
             option_fields[i] = new JTextField();
             option_panels[i] = new JPanel();
@@ -365,11 +327,7 @@ public class GuiAddFlashcard
             option_panels[i].add(option_fields[i]);
             option_panels[i].setLayout(new BoxLayout(option_panels[i], BoxLayout.X_AXIS));
 
-
-
             lower_panel.add(option_panels[i]);
-
-
         }
 
         //Make first button a default option
@@ -377,10 +335,9 @@ public class GuiAddFlashcard
         input_panel.add(lower_panel);
         lower_panel.setMaximumSize(new Dimension(300, lower_panel.getPreferredSize().height));
 
-
         lower_panel.setVisible(true);
 
-        JLabel catalogue_name_label = new JLabel("You are adding a flashcard to: "+filename);
+        JLabel catalogue_name_label = new JLabel("You are adding a flashcard to: " + filename);
         catalogue_name_label.setAlignmentX(Component.CENTER_ALIGNMENT); //centers the field
         input_panel.add(catalogue_name_label);
 
@@ -388,27 +345,21 @@ public class GuiAddFlashcard
         add_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-
-                //We create flashcard based on its type,POLYMORPHISM!!!!!!!
                 Flashcard new_flashcard;
                 String selected_button = getSelectedButtonActionCommand(group);
-                System.out.println("Selection option:"+selected_button);
+                System.out.println("Selection option:" + selected_button);
 
                 ArrayList<String> all_options = new ArrayList<String>();
-                for(int i =0;i<option_fields.length;i++){
+                for (int i = 0; i < option_fields.length; i++) {
                     all_options.add(option_fields[i].getText());
                 }
-                new_flashcard = new FlashcardABCD(question_field.getText(),Integer.parseInt(selected_button),all_options);
-                CustomFile.serializeFlashcard(current_file,new_flashcard);
+                new_flashcard = new FlashcardABCD(question_field.getText(), Integer.parseInt(selected_button), all_options);
+                CustomFile.serializeFlashcard(current_file, new_flashcard);
 
-
-
-                CustomFile.appendToReport("User added ABCD flashcard:["+new_flashcard+"]","raport.txt",true);
+                CustomFile.appendToReport("User added ABCD flashcard:[" + new_flashcard + "]", "raport.txt", true);
 
                 JOptionPane.showMessageDialog(add_flashcard_window, "Flashcard added!");
                 add_flashcard_window.dispose(); // Close the window
-
-
             }
         });
     }
@@ -416,19 +367,12 @@ public class GuiAddFlashcard
     /**
      * Function is responsible for binding a button to the operation of adding a flashcard.
      */
-    private void addButtonListeners()
-    {
-
-
+    private void addButtonListeners() {
         close_button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 add_flashcard_window.dispose(); // Close the window
             }
         });
-
-
-
-
     }
 }

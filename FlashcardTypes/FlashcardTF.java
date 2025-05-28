@@ -13,7 +13,7 @@ public class FlashcardTF extends Flashcard {
 
     @Override
     public String printOut(int which_one) {
-        switch(which_one) { //incredibly useful for printing out specific parts of flashcard in swing
+        switch (which_one) { //incredibly useful for printing out specific parts of flashcard in swing
             case (0): {
                 return question;
             }
@@ -23,8 +23,7 @@ public class FlashcardTF extends Flashcard {
             case (2): {
                 return String.valueOf(input_answer);
             }
-            default:
-            {
+            default: {
                 return "";
             }
         }
@@ -32,29 +31,28 @@ public class FlashcardTF extends Flashcard {
 
     @Override
     public void overwriteValues(String new_message, int which_one) {
-        switch(which_one) { //choosing what to overwrite
-            case(0): {
+        switch (which_one) { //choosing what to overwrite
+            case (0): {
                 question = new_message;
                 break;
             }
-            case(1): { //again, different way of working with booleans
+            case (1): { //again, different way of working with booleans
                 answer = true;
                 break;
             }
-            case(2): {
+            case (2): {
                 answer = false;
                 break;
             }
-            case(3): {
+            case (3): {
                 input_answer = true;
                 break;
             }
-            case(4): {
+            case (4): {
                 input_answer = false;
                 break;
             }
-            default:
-            {
+            default: {
                 return;
             }
         }
@@ -62,19 +60,17 @@ public class FlashcardTF extends Flashcard {
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "question: " + question + " answer: " + answer;
     }
 
     @Override
     public void checkAnswer() {
-        if(input_answer == answer){
+        if (input_answer == answer) {
             is_correct = true;
-        }
-        else {
+        } else {
             is_correct = false;
         }
         //no need to change to 0 it already is 0
     }
 }
-

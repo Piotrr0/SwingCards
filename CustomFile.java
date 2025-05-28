@@ -11,14 +11,15 @@ import java.util.List;
 
 /**
  * This class is used to manage file system especially serialization and deserialization
- * */
+ */
 abstract public class CustomFile {
 
 
     /**
      * Function deserializes all Flashcards from given filename
+     *
      * @param filename is a name of file that will be read
-     * */
+     */
     public static ArrayList<Flashcard> readSerializefFlashcard(String filename) {
         ArrayList<Flashcard> flashcards = new ArrayList<>();
 
@@ -32,11 +33,10 @@ abstract public class CustomFile {
                 }
             }
         } catch (IOException | ClassNotFoundException e) {
-            if(isEmpty(filename)){
-                System.err.println("Error during deserialization: " +", file is empty");
+            if (isEmpty(filename)) {
+                System.err.println("Error during deserialization: " + ", file is empty");
 
-            }
-            else{
+            } else {
                 System.err.println("Error during deserialization: ");
             }
         }
@@ -45,13 +45,13 @@ abstract public class CustomFile {
 
     /**
      * Function serializes flashcard and APPENDS it into the given file.
-     * */
-    public static void serializeFlashcard(String filename,Flashcard flashcard){
+     */
+    public static void serializeFlashcard(String filename, Flashcard flashcard) {
         //We first read entire file and store objects inside ArrayList. Then we add our new flashcard and save entire file at once.
         //There is no need to read file if it is empty
         ArrayList<Flashcard> flashcards = new ArrayList<>();
-        if(!isEmpty(filename)){
-            flashcards =  readSerializefFlashcard(filename);
+        if (!isEmpty(filename)) {
+            flashcards = readSerializefFlashcard(filename);
         }
         flashcards.add(flashcard);
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
@@ -66,20 +66,22 @@ abstract public class CustomFile {
 
     /**
      * Function returns if given file is empty
+     *
      * @param path path to the file
      * @return returns boolean
-     * */
-    public static boolean isEmpty(String path){
+     */
+    public static boolean isEmpty(String path) {
         File file = new File(path);
-        return file.length()==0;
+        return file.length() == 0;
     }
 
     /**
      * Function saves information to the raport file without a timestamp
-     * @param message message to be saved
+     *
+     * @param message  message to be saved
      * @param filename location of file to be saved in
-     * */
-    public static void appendToReport(String message,String filename){
+     */
+    public static void appendToReport(String message, String filename) {
         // Use try-with-resources to ensure buffer is automatically closed
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, true))) {
             writer.write(message);       // Write the new line
@@ -91,13 +93,14 @@ abstract public class CustomFile {
 
     /**
      * Function saves information to the raport file and can add timestamp
-     * @param message message to be saved
-     * @param filename location of file to be saved in
+     *
+     * @param message   message to be saved
+     * @param filename  location of file to be saved in
      * @param timestamp specifies if you want to have timestampt prior the message
-     * */
-    public static void appendToReport(String message,String filename ,Boolean timestamp){
+     */
+    public static void appendToReport(String message, String filename, Boolean timestamp) {
         //append with timestamp
-        if(timestamp) {
+        if (timestamp) {
             // Get the current time
             LocalTime currentTime = LocalTime.now();
 
@@ -106,11 +109,11 @@ abstract public class CustomFile {
             String formattedTime = currentTime.format(formatter);
             System.out.println("adding timestamp");
             // Print the current time
-            appendToReport(formattedTime+": "+message, filename);
+            appendToReport(formattedTime + ": " + message, filename);
         }
         //append without timestamp
-        else{
-            appendToReport(message,filename);
+        else {
+            appendToReport(message, filename);
 
         }
     }
@@ -141,26 +144,19 @@ abstract public class CustomFile {
 
     /**
      * Function makes file empty/clears it
+     *
      * @return if clearing file was successfull
-     * */
-    public static boolean clear(String file_path)  {
-
-
-        try{
+     */
+    public static boolean clear(String file_path) {
+        try {
             PrintWriter pw = new PrintWriter(file_path);
             pw.close();
             return true;
-        }
-
-        catch (Exception e){
+        } catch (Exception e) {
             return false;
         }
-
-
     }
-
-
-    }
+}
 
 
 

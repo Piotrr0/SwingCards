@@ -4,7 +4,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class FlashcardABCD extends Flashcard {
-
     String input_answer = "";
     OptionsList option_list;
 
@@ -14,23 +13,20 @@ public class FlashcardABCD extends Flashcard {
         int answer;
         ArrayList<String> options; //array for options
 
-        OptionsList(int answer, ArrayList<String> options){
+        OptionsList(int answer, ArrayList<String> options) {
             this.how_many = options.size();
             this.answer = answer;
             this.options = options; //we have to .clear() the original ArrayList afterwards because it's a shallow copy and only passes reference
         }
-        public void checkAnswer()
-        {
-            if (input_answer.equals(options.get(answer-1)))
-            {
+
+        public void checkAnswer() {
+            if (input_answer.equals(options.get(answer - 1))) {
                 is_correct = true;
-            }
-            else {
+            } else {
                 is_correct = false;
             }
         }
     }
-
 
     public FlashcardABCD(String question, int answer, ArrayList<String> options) {
         this.question = question;
@@ -40,7 +36,7 @@ public class FlashcardABCD extends Flashcard {
 
     @Override
     public String printOut(int which_one) {
-        switch(which_one) { //incredibly useful for printing out specific parts of flashcard in swing
+        switch (which_one) { //incredibly useful for printing out specific parts of flashcard in swing
             case (0): {
                 return question;
             }
@@ -53,61 +49,52 @@ public class FlashcardABCD extends Flashcard {
             case (3): {
                 return String.valueOf(option_list.how_many);
             }
-            default:
-            {
+            default: {
                 //if which_one is in boundaries of list of answers, which starts from 3 up if it was case
-                if(which_one-4 < option_list.how_many && which_one-4 >= 0){
-                    return option_list.options.get(which_one-4);
-                }
-                else return "";
+                if (which_one - 4 < option_list.how_many && which_one - 4 >= 0) {
+                    return option_list.options.get(which_one - 4);
+                } else return "";
             }
         }
     }
 
     @Override
     public void overwriteValues(String new_message, int which_one) {
-        switch(which_one) { //choosing what to overwrite
-            case(0): {
+        switch (which_one) { //choosing what to overwrite
+            case (0): {
                 question = new_message;
                 break;
             }
-            case(1): { //again, different way of working with this function
+            case (1): { //again, different way of working with this function
                 int temp_num;
                 try {
                     temp_num = Integer.parseInt(new_message);
-                }
-                catch (NumberFormatException e ){
+                } catch (NumberFormatException e) {
                     return;
                 }
                 option_list.answer = temp_num;
                 break;
             }
-            case(2): {
+            case (2): {
                 input_answer = new_message;
                 break;
             }
-            default:
-            {
+            default: {
                 //if which_one is in boundaries of list of answers, which starts from 3 up if it was case
-                if(which_one-3 < option_list.how_many && which_one-3 >= 0){
-                    option_list.options.set(which_one-3, new_message);
-                }
-                else return;
+                if (which_one - 3 < option_list.how_many && which_one - 3 >= 0) {
+                    option_list.options.set(which_one - 3, new_message);
+                } else return;
             }
         }
-
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "question: " + question + " answer: " + option_list.answer + option_list.options;
     }
 
     @Override
     public void checkAnswer() {
-       option_list.checkAnswer();
+        option_list.checkAnswer();
+    }
 }
-
-}
-
-
